@@ -70,9 +70,9 @@ Prioritize the "Linked Ecosystem" approach where data flows between the Admin SP
 
 ### **HIGH IMPORTANCE: Standard Feature Specification Format**
 
-**All specifications MUST be provided in a single, continuous markdown block.**
+All specifications MUST be provided in a single, continuous markdown block.
 
-**DO NOT add   [cite_start] or [cite: x] markers to the specs.** 
+DO NOT add   [cite_start] or [cite: x] markers to the specs.
 
 
 

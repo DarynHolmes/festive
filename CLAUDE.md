@@ -150,3 +150,8 @@ As the project progresses, keep `supporting-documentation/gemini-gem.md` up to d
 - Do not allow TS errors — make sure we are avoiding them
 - Don't add tests for the sake of it — they should be valuable
 - Don't write documentation for the sake of it — high signal to noise
+
+
+DON'T EXPOSE ANY API SECRETS OR ANY PRIVATE KEYS OR ANY SENSITIVE INFORMATION.
+Use security best practices such as env files. 
+This is non-negotiable and we can't compromise on security. 
