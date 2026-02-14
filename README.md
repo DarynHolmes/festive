@@ -14,7 +14,7 @@ Vue 3 (Composition API) · Quasar · TypeScript · Pinia · PocketBase · Playwr
 |-----|---------|
 | [Overview](documentation/01_overview.md) | Problem frame, success criteria, strategic roadmap |
 | [Architecture](documentation/02_architecture.md) | System context, client layers, data flow, data model, deployment |
-| [Component Design](documentation/03_component_design.md) | Thick-page / slim-component pattern with concrete example |
+| [Component Design](documentation/03_component_design.md) | Container pages, presentational components — pattern with concrete example |
 | [Accessibility](documentation/04_accessibility.md) | WCAG 2.2 AA strategy, elderly-friendly design, automated enforcement |
 
 ### Architecture Decision Records

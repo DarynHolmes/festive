@@ -1,0 +1,33 @@
+{
+  "name": "festive-board-manager",
+  "version": "0.1.0",
+  "description": "Real-time dining attendance tracker for UGLE Lodge meetings",
+  "productName": "Festive Board Manager",
+  "author": "Daryn Holmes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "lint": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.0",
+    "pinia": "^2.3.0",
+    "quasar": "^2.17.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@quasar/app-vite": "^2.1.0",
+    "@types/node": "^22.0.0",
+    "autoprefixer": "^10.4.0",
+    "sass-embedded": "^1.80.0",
+    "typescript": "~5.7.0",
+    "vue-tsc": "^2.2.0"
+  },
+  "engines": {
+    "node": "^20 || ^22",
+    "npm": ">= 6.13.4"
+  }
+}
