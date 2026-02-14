@@ -155,6 +155,7 @@ As the project progresses, keep `supporting-documentation/gemini-gem.md` up to d
 
 ## Do NOT
 
+- Code comments should explain **why**, not just **what** — the code itself shows what it does
 - Do not introduce spaghetti code
 - Do not let files get too long
 - Do not allow TS errors — make sure we are avoiding them

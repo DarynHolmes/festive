@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
 
-const pocketbaseUrl = process.env.VITE_POCKETBASE_URL;
+const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL;
 
 if (!pocketbaseUrl) {
   throw new Error(

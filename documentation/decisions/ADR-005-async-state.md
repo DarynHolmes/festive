@@ -49,3 +49,43 @@ Switch to Vue Query if any of these occur:
 - Two developers on the project (human + AI) need to be honest about when "making it work" becomes "fighting the library"
 - If we fall back, the migration is localised to composables and service layer — components remain untouched (they only see props)
 - The container/presentational pattern (see [component design](../03_component_design.md)) insulates components from whichever async state layer we use
+
+## Realtime + Query Cache Pattern
+
+We follow the "event-based invalidation" pattern described in [Using WebSockets with React Query](https://tkdodo.eu/blog/using-web-sockets-with-react-query) by TkDodo (TanStack Query maintainer). The pattern is framework-agnostic and applies equally to Pinia Colada.
+
+**Principle:** keep queries as the single source of truth for server state. WebSocket/SSE events don't write data into the cache directly — they invalidate the relevant query key, which triggers a refetch only if an active consumer exists.
+
+**Why invalidation over direct cache updates:**
+
+- Simpler — no manual cache shaping, no handling additions vs deletions vs updates differently
+- Type-safe — the query function already knows how to fetch and map the data
+- Efficient — invalidation is a no-op if no component is consuming that query key
+
+**Implementation:** `useRealtimeSync` (composable) subscribes to PocketBase SSE events in `MainLayout`. On any event, the `onEvent` callback calls `queryCache.invalidateQueries({ key })`. Pinia Colada handles the rest.
+
+**Future consideration:** for queries covered by realtime subscriptions, set `staleTime: Infinity` to avoid redundant refetches on window refocus or component remount. PocketBase will tell us when data changes — no need for time-based staleness.
+
+## Implementation Findings (Sprint 0)
+
+**Date:** 2026-02-14
+
+### What worked
+
+- **Boot file registration** — `app.use(PiniaColada)` in a Quasar boot file integrates cleanly. No conflicts with Pinia's own boot registration.
+- **`useQuery` composable pattern** — wrapping `useQuery({ key, query })` in a custom composable (`useLodgesQuery`) matches Vue Composition API conventions. The returned `{ data, error, isPending }` destructuring is intuitive.
+- **Cache invalidation from realtime events** — `useQueryCache().invalidateQueries({ key: ['lodges'] })` triggers automatic refetch when PocketBase realtime events arrive. This is the core integration point and it works cleanly.
+
+### Limitations noted
+
+- **Reactive/parameterised keys** — for queries like `['lodge', id]` where `id` changes, you need `defineQueryOptions` or pass a function to `useQuery`. Worth noting for future parameterised queries (Sprint 1).
+
+### Fallback triggers
+
+None of the three fallback triggers from the Decision section have been hit:
+
+1. Realtime subscription integration — works cleanly via `invalidateQueries`
+2. Cache invalidation — not yet tested with optimistic updates (Sprint 1)
+3. No blocking bugs encountered
+
+**Status: Pinia Colada retained.** Will re-evaluate in Sprint 1 when mutations and optimistic updates are introduced.

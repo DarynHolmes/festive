@@ -8,6 +8,44 @@ Lodge Secretaries need accurate, live dining numbers to manage catering and redu
 
 Vue 3 (Composition API) · Quasar · TypeScript · Pinia · PocketBase · Playwright · PWA
 
+## Local Development
+
+### Prerequisites
+
+- Node.js 20+ with pnpm
+- PocketBase binary (included at `pocketbase_0.36.3/`)
+
+### Start PocketBase
+
+```bash
+cd pocketbase_0.36.3
+./pocketbase serve
+```
+
+PocketBase starts on `http://127.0.0.1:8090`. Admin UI: `http://127.0.0.1:8090/_/`.
+
+On first run, create an admin account when prompted. Migrations in `pb_migrations/` run automatically, creating the `lodges` and `dining_records` collections.
+
+### Seed Data
+
+Add a test lodge via the admin UI or curl:
+
+```bash
+curl -X POST http://127.0.0.1:8090/api/collections/lodges/records \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Lodge of Harmony No. 255", "province": "Metropolitan", "meeting_location": "Freemasons Hall, London"}'
+```
+
+### Start the Secretary App
+
+```bash
+cd clients/secretary-app
+pnpm install
+pnpm dev
+```
+
+The app reads `VITE_POCKETBASE_URL` from `.env.development` (defaults to `http://127.0.0.1:8090`).
+
 ## Documentation
 
 | Doc | Summary |

@@ -12,6 +12,11 @@ interface UseRealtimeSyncOptions {
  * Subscribes to PocketBase realtime events for a collection.
  * Automatically unsubscribes when the component unmounts.
  *
+ * Follows the event-based invalidation pattern described in
+ * {@link https://tkdodo.eu/blog/using-web-sockets-with-react-query TkDodo — Using WebSockets with React Query}.
+ * SSE events invalidate the query cache rather than writing data directly,
+ * keeping queries as the single source of truth for server state.
+ *
  * @example
  * useRealtimeSync({
  *   collection: 'lodges',
