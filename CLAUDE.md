@@ -66,7 +66,7 @@ Avoid generic terms (e.g. "group" instead of "Lodge", "admin" instead of "Lodge 
 **Philosophy:** pragmatic test automation — meaningful tests, not coverage for coverage's sake. Write code that is easier to test (pure functions). Don't add tests because we can.
 
 **Test types:**
-- Meaningful unit tests
+- Meaningful unit tests (co-located with the file under test, e.g. `mappers.test.ts` next to `mappers.ts`)
 - E2E / high-level tests
 
 **Quality characteristics:**
