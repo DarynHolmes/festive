@@ -38,6 +38,7 @@ useRealtimeSync({
   collection: 'dining_records',
   onEvent: () => {
     void queryCache.invalidateQueries({ key: ['dining_records'] });
+    void queryCache.invalidateQueries({ key: ['dining-dashboard'] });
   },
 });
 </script>

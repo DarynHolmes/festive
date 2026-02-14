@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { toLodge, toDiningEntry } from './mappers';
-import type { LodgeRecord, DiningRecord } from './types';
+import { toLodge, toDiningEntry, toMember, mergeMembersWithDining } from './mappers';
+import type { LodgeRecord, DiningRecord, MemberRecord } from './types';
+import type { Member, DiningEntry } from './types';
 
 function makeLodgeRecord(
   overrides: Partial<LodgeRecord> = {},
@@ -93,5 +94,111 @@ describe('toDiningEntry', () => {
     expect(entry).not.toHaveProperty('collectionName');
     expect(entry).not.toHaveProperty('created');
     expect(entry).not.toHaveProperty('updated');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// toMember
+// ---------------------------------------------------------------------------
+
+function makeMemberRecord(
+  overrides: Partial<MemberRecord> = {},
+): MemberRecord {
+  return {
+    id: 'mem_001',
+    lodge_id: 'lodge_001',
+    first_name: 'James',
+    last_name: 'Whitfield',
+    rank: 'W Bro',
+    status: 'active',
+    collectionId: 'pbc_3572739349',
+    collectionName: 'members',
+    created: '2026-01-01T00:00:00Z',
+    updated: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+describe('toMember', () => {
+  it('maps PocketBase record fields to camelCase domain object', () => {
+    const member = toMember(makeMemberRecord());
+
+    expect(member).toEqual({
+      id: 'mem_001',
+      lodgeId: 'lodge_001',
+      firstName: 'James',
+      lastName: 'Whitfield',
+      rank: 'W Bro',
+      status: 'active',
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// mergeMembersWithDining
+// ---------------------------------------------------------------------------
+
+function makeMember(overrides: Partial<Member> = {}): Member {
+  return {
+    id: 'mem_001',
+    lodgeId: 'lodge_001',
+    firstName: 'James',
+    lastName: 'Whitfield',
+    rank: 'W Bro',
+    status: 'active',
+    ...overrides,
+  };
+}
+
+function makeDiningEntry(overrides: Partial<DiningEntry> = {}): DiningEntry {
+  return {
+    id: 'din_001',
+    lodgeId: 'lodge_001',
+    memberId: 'mem_001',
+    meetingDate: '2026-03-15T00:00:00Z',
+    status: 'dining',
+    updatedBy: 'seed',
+    ...overrides,
+  };
+}
+
+describe('mergeMembersWithDining', () => {
+  it('pairs members with their dining records', () => {
+    const members = [makeMember()];
+    const dining = [makeDiningEntry({ memberId: 'mem_001', status: 'dining' })];
+
+    const rows = mergeMembersWithDining(members, dining);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toEqual({
+      memberId: 'mem_001',
+      diningRecordId: 'din_001',
+      rank: 'W Bro',
+      firstName: 'James',
+      lastName: 'Whitfield',
+      status: 'dining',
+    });
+  });
+
+  it('defaults to undecided when member has no dining record', () => {
+    const members = [makeMember({ id: 'mem_new' })];
+
+    const rows = mergeMembersWithDining(members, []);
+
+    expect(rows[0]!.status).toBe('undecided');
+    expect(rows[0]!.diningRecordId).toBeNull();
+  });
+
+  it('excludes resigned members', () => {
+    const members = [
+      makeMember({ id: 'mem_active', status: 'active' }),
+      makeMember({ id: 'mem_resigned', status: 'resigned' }),
+      makeMember({ id: 'mem_honorary', status: 'honorary' }),
+    ];
+
+    const rows = mergeMembersWithDining(members, []);
+
+    expect(rows).toHaveLength(2);
+    expect(rows.map((r) => r.memberId)).toEqual(['mem_active', 'mem_honorary']);
   });
 });
