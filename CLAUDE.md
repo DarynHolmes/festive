@@ -59,7 +59,8 @@ Avoid generic terms (e.g. "group" instead of "Lodge", "admin" instead of "Lodge 
     - Pages (containers): fetch data, orchestrate state
     - Components (presentational): receive props, emit events
 - Favour Vue slots to keep components flat, small, and reusable
-
+- Favour composition over inheritance 
+ 
 ## Testing
 
 **Philosophy:** pragmatic test automation — meaningful tests, not coverage for coverage's sake. Write code that is easier to test (pure functions). Don't add tests because we can.
