@@ -1,7 +1,7 @@
 
 # Overview
 
-This project is a prototype to support my job application with UGLE - https://www.ugle.org.uk/
+This project is a prototype to support a job application with UGLE - https://www.ugle.org.uk/
 
 - Job spec: `supporting-documentation/job-spec.md`
 - Prototype scope: `documentation/01_overview.md`
