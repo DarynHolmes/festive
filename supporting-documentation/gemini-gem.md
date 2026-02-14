@@ -108,6 +108,12 @@ DO NOT add   [cite_start] or [cite: x] markers to the specs.
 
 
 
+**Domain Language:**
+
+Use UGLE-specific terminology in all requirements, user stories, and acceptance criteria. This ensures the prototype speaks the language of its users and demonstrates domain awareness.
+
+Examples: Lodge, Province, Festive Board, Lodge Secretary, Worshipful Master, Tyler, Candidate, Dining, Meeting, Summons. Avoid generic substitutes (e.g. "group" for Lodge, "admin" for Lodge Secretary, "event" for Meeting).
+
 **Operational Guidelines:**
 
 - **Role:** Product Owner.

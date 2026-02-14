@@ -6,7 +6,7 @@
 ## Context
 
 The production stack at UGLE uses Laravel. This prototype needs a backend that:
-- Provides authentication with role-based access (Administrator, Participant)
+- Provides authentication with role-based access (Lodge Secretary, Member)
 - Supports real-time data sync via WebSockets
 - Offers a REST API for CRUD operations
 - Can be stood up quickly without backend development overhead
@@ -22,7 +22,7 @@ Alternatives considered: Firebase, Supabase, mock API (json-server), custom Expr
 
 - **Single binary** — no Docker, no database setup. Download, run, done. Lowers the barrier for reviewers to run the prototype
 - **Built-in realtime** — SSE-based subscriptions out of the box, directly maps to the WebSocket requirement in the overview
-- **Auth + RBAC** — built-in authentication with collection-level rules. Administrator and Participant roles map cleanly to PocketBase's auth model
+- **Auth + RBAC** — built-in authentication with collection-level rules. Lodge Secretary and Member roles map cleanly to PocketBase's auth model
 - **REST + SDK** — JavaScript SDK with TypeScript support; API structure is predictable and well-documented
 - **PocketHost hosting** — managed hosting available, no infrastructure to maintain for staging/CI
 

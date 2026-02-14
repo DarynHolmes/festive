@@ -8,8 +8,8 @@
 
 ```mermaid
 graph LR
-    Admin[Admin SPA<br/>Vue + Quasar]
-    Participant[Participant App<br/>Deferred]
+    Admin[Secretary SPA<br/>Vue + Quasar]
+    Member[Member App<br/>Deferred]
     PB[PocketBase v0.36]
     PH[PocketHost<br/>Managed hosting]
     Local[Local PocketBase<br/>Dev only]
@@ -17,7 +17,7 @@ graph LR
     GH[GitHub Actions<br/>CI/CD]
 
     Admin -->|REST + Realtime SSE| PB
-    Participant -.->|Deferred| PB
+    Member -.->|Deferred| PB
     PB --- PH
     PB --- Local
     Admin --- Vercel
@@ -25,7 +25,7 @@ graph LR
     GH -->|E2E against| PB
 ```
 
-**Phase 1 scope:** Admin SPA only. Participant app is deferred.
+**Phase 1 scope:** Lodge Secretary SPA only. Member app is deferred.
 
 ---
 
@@ -33,8 +33,8 @@ graph LR
 
 ```mermaid
 graph TD
-    Pages[Pages<br/>Smart / thick]
-    Components[Components<br/>Dumb / slim]
+    Pages[Pages<br/>Container]
+    Components[Components<br/>Presentational]
     Composables[Composables<br/>use* functions]
     Stores[Pinia Stores<br/>Global state]
     Colada[Pinia Colada<br/>Async state]
@@ -72,20 +72,20 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant UI as Admin UI
+    participant UI as Lodge Secretary UI
     participant Store as Pinia Store
     participant PB as PocketBase
     participant Q as Offline Queue
 
     Note over UI,PB: Online flow
-    UI->>Store: User marks member as dining
+    UI->>Store: Secretary marks Member as dining
     Store->>UI: Optimistic update (instant)
     Store->>PB: Mutation via service layer
     PB-->>Store: Confirmation / conflict
     Store->>UI: Confirm or rollback
 
     Note over UI,Q: Offline flow
-    UI->>Store: User marks member as dining
+    UI->>Store: Secretary marks Member as dining
     Store->>UI: Optimistic update (instant)
     Store->>Q: Enqueue mutation
     Note over Q: Stored in IndexedDB
@@ -110,7 +110,7 @@ erDiagram
         string id PK
         string lodge_id FK
         string name
-        string role "Administrator | Participant"
+        string role "Lodge Secretary | Member"
         string email
     }
     DINING_RECORDS {

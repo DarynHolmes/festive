@@ -1,6 +1,6 @@
 # Component Design Rationale
 
-**Pattern:** Thick pages, slim components.
+**Pattern:** Container pages, presentational components.
 **Goal:** Testable, reusable UI with clear data ownership.
 
 ---
@@ -9,14 +9,14 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│  Page (smart)                               │
+│  Page (container)                            │
 │  - Owns data fetching (composables/stores)  │
 │  - Orchestrates layout                      │
 │  - Handles navigation and side effects      │
 │                                             │
 │  ┌──────────────┐  ┌──────────────────────┐ │
 │  │ Component A  │  │ Component B          │ │
-│  │ (dumb)       │  │ (dumb)               │ │
+│  │ (presentational)       │  │ (presentational)               │ │
 │  │ - Props in   │  │ - Props in           │ │
 │  │ - Events out │  │ - Events out         │ │
 │  │ - Slots for  │  │ - No store access    │ │
@@ -37,7 +37,7 @@
 ## Concrete Example: Dining Dashboard
 
 ```vue
-<!-- DiningDashboardPage.vue (smart page) -->
+<!-- DiningDashboardPage.vue (container) -->
 <template>
   <q-page padding>
     <ConnectionStatus :status="connectionStatus" />
@@ -74,7 +74,7 @@ async function handleStatusUpdate(memberId: string, status: DiningStatus) {
 ```
 
 ```vue
-<!-- DiningCountCard.vue (dumb component) -->
+<!-- DiningCountCard.vue (presentational) -->
 <template>
   <q-card>
     <q-card-section>

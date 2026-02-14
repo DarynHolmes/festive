@@ -10,7 +10,7 @@ The UGLE job spec requires Vue and TypeScript. Two framework-level decisions nee
 1. **Composition API vs Options API** — Vue 3 supports both
 2. **SPA (Vite) vs SSR (Nuxt)** — fundamentally different architectures
 
-The application is a real-time admin dashboard with WebSocket subscriptions, offline support, and no public-facing content requiring SEO.
+The application is a real-time Lodge Secretary dashboard with WebSocket subscriptions, offline support, and no public-facing content requiring SEO.
 
 ## Decision
 
@@ -25,7 +25,7 @@ The application is a real-time admin dashboard with WebSocket subscriptions, off
 
 ### Why SPA over Nuxt/SSR
 
-- **No SEO requirement** — this is an authenticated admin tool, not a content site
+- **No SEO requirement** — this is an authenticated Lodge Secretary tool, not a content site
 - **Realtime-first** — WebSocket subscriptions and service workers are simpler without SSR hydration concerns
 - **Quasar conflict** — Quasar has its own CLI/build system optimised for Vite SPAs; layering Nuxt adds integration tax for zero benefit
 - **Offline PWA** — service worker caching strategy is cleaner in a pure SPA; Nuxt's hybrid rendering model complicates the offline story
@@ -34,4 +34,4 @@ The application is a real-time admin dashboard with WebSocket subscriptions, off
 
 - No server-side rendering; initial load relies on client-side JavaScript
 - File-based routing not available out of the box (use `vue-router` with explicit route definitions)
-- Future participant-facing app could reconsider if SEO becomes relevant — but that's a separate deployment decision
+- Future Member-facing app could reconsider if SEO becomes relevant — but that's a separate deployment decision

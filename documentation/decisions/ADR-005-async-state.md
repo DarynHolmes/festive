@@ -47,4 +47,4 @@ Switch to Vue Query if any of these occur:
 
 - Two developers on the project (human + AI) need to be honest about when "making it work" becomes "fighting the library"
 - If we fall back, the migration is localised to composables and service layer — components remain untouched (they only see props)
-- The thick-page/slim-component pattern (see [component design](../03_component_design.md)) insulates components from whichever async state layer we use
+- The container/presentational pattern (see [component design](../03_component_design.md)) insulates components from whichever async state layer we use

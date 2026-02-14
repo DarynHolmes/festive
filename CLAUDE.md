@@ -32,11 +32,19 @@ This project is a prototype to support my job application with UGLE - https://ww
 - PocketBase v0.36 (plays the role of Laravel in this prototype; I have a PocketHost subscription)
 - Use PocketBase's realtime feature for WebSocket integration
 - Use PocketBase to provide test data
-- 2 roles (Administrator and Participant) — use PocketBase's RBAC support
+- 2 roles (Lodge Secretary and Member) — use PocketBase's RBAC support
 - Consider a repository-light pattern to decouple backend data structures
 
 **App structure:**
-- Start with the admin app; defer the participant app decision until Phase 1 is solid
+- Start with the Lodge Secretary app; defer the Member app decision until Phase 1 is solid
+
+## Domain Language
+
+Use UGLE-specific terminology throughout code, documentation, and UI. This demonstrates domain awareness and makes the prototype immediately legible to UGLE staff.
+
+Examples: Lodge, Province, Festive Board, Lodge Secretary, Worshipful Master, Tyler, Candidate, Dining, Meeting, Summons.
+
+Avoid generic terms (e.g. "group" instead of "Lodge", "admin" instead of "Lodge Secretary", "event" instead of "Meeting") unless in a purely technical context.
 
 ## Architecture Principles
 
@@ -47,9 +55,9 @@ This project is a prototype to support my job application with UGLE - https://ww
     - Use props in Vue components, defined by the components
 - Favour pure functions — easier to test
 - Avoid code duplication; maximise code reuse
-- **Thick/smart pages, slim/dumb components**
-    - Pages: get data
-    - Components: use props and emit events
+- **Container pages, presentational components**
+    - Pages (containers): fetch data, orchestrate state
+    - Components (presentational): receive props, emit events
 - Favour Vue slots to keep components flat, small, and reusable
 
 ## Testing
@@ -112,7 +120,7 @@ This is highly important for UGLE.
 
 **High-value deliverables:**
 - Architecture Decision Records (ADRs) — short docs explaining why we chose Vue 3 Composition API, offline-first, PocketBase, etc.
-- Component design rationale — a brief doc showing the thick-page/slim-component pattern with a real example
+- Component design rationale — a brief doc showing the container/presentational pattern with a real example
 
 ## Documentation Style
 

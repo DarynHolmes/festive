@@ -1,7 +1,7 @@
 # Accessibility Strategy
 
 **Standard:** WCAG 2.2 AA
-**User base:** Ages 18–90+, varying technical literacy, diverse devices
+**Membership:** Ages 18–90+, varying technical literacy, diverse devices
 
 Accessibility is not a feature — it's a constraint that shapes every design and implementation decision.
 
@@ -11,11 +11,11 @@ Accessibility is not a feature — it's a constraint that shapes every design an
 
 | Principle | Specification | Rationale |
 |-----------|--------------|-----------|
-| Large hit targets | Min 44×44px for all interactive elements | Reduced motor precision in older users |
-| Simple interactions | Click/tap only — no swipe, long-press, or drag | Complex gestures exclude users with limited dexterity |
+| Large hit targets | Min 44×44px for all interactive elements | Reduced motor precision in older Members |
+| Simple interactions | Click/tap only — no swipe, long-press, or drag | Complex gestures exclude Members with limited dexterity |
 | High contrast | Min 4.5:1 for text, 3:1 for large text and UI elements | Age-related vision changes reduce contrast sensitivity |
-| Text scaling | Layout must not break at 200% browser font size | Users with low vision rely on browser zoom |
-| Clear feedback | Visible focus indicators, loading states, success/error confirmations | Reduces uncertainty and cognitive load |
+| Text scaling | Layout must not break at 200% browser font size | Members with low vision rely on browser zoom |
+| Clear feedback | Visible focus indicators, loading states, success/error confirmations | Reduces uncertainty and cognitive load for less technical Members |
 | Progressive disclosure | Show essential actions first; reveal complexity on demand | Prevents overwhelming users with information |
 
 ---
@@ -63,7 +63,7 @@ Quasar components provide a reasonable starting point, but several gaps require 
 | Form error messages not linked to inputs | Add `aria-describedby` pointing to error message `id` on every form field |
 | No skip-to-content link | Add custom skip link in `QLayout` header — visible on focus |
 | Connection status not announced | Use `aria-live="polite"` region for online/offline status changes |
-| Dining count changes | Use `aria-live="polite"` to announce count updates to screen readers |
+| Dining count changes | Use `aria-live="polite"` to announce Festive Board count updates to screen readers |
 | Colour contrast in default theme | Audit and override Quasar's default palette; enforce 4.5:1 minimum |
 | Custom focus indicators | Override browser defaults with visible, high-contrast focus rings (not just colour change) |
 
@@ -79,7 +79,7 @@ Automated tests catch ~30-40% of accessibility issues. These manual checks cover
 - [ ] **Zoom:** Layout remains usable at 200% browser zoom with no horizontal scrolling
 - [ ] **Colour only:** No information conveyed by colour alone (e.g., error states use icon + text, not just red border)
 - [ ] **Touch targets:** Verify 44×44px minimum on mobile viewport
-- [ ] **Motion:** Respect `prefers-reduced-motion` — disable animations for users who opt out
+- [ ] **Motion:** Respect `prefers-reduced-motion` — disable animations for Members who opt out
 
 ---
 

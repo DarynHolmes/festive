@@ -5,7 +5,7 @@
 
 ## Context
 
-Lodge meetings frequently take place in historic buildings — basement rooms with thick stone walls, limited mobile signal, and unreliable Wi-Fi. A Lodge Secretary marking members as "dining" cannot afford to lose that data because of a dropped connection.
+Lodge Meetings frequently take place in historic buildings — basement rooms with thick stone walls, limited mobile signal, and unreliable Wi-Fi. A Lodge Secretary marking Members as "dining" cannot afford to lose that data because of a dropped connection.
 
 The overview defines **connectivity resilience** as a non-negotiable constraint and **state resilience** as a key capability.
 
@@ -16,7 +16,7 @@ The overview defines **connectivity resilience** as a non-negotiable constraint 
 ### Architecture
 
 ```
-User Action → Optimistic UI Update (Pinia) → Enqueue Mutation
+Secretary Action → Optimistic UI Update (Pinia) → Enqueue Mutation
                                                     ↓
                                             [Online?]
                                            /         \
@@ -29,9 +29,9 @@ User Action → Optimistic UI Update (Pinia) → Enqueue Mutation
 
 ### Key decisions within this strategy
 
-1. **Optimistic updates** — UI reflects the user's action immediately. If the server rejects or a conflict is detected, the UI rolls back with a clear notification
+1. **Optimistic updates** — UI reflects the Secretary's action immediately. If the server rejects or a conflict is detected, the UI rolls back with a clear notification
 2. **Mutation queue** — offline mutations are queued locally (IndexedDB via Pinia persistence) and replayed when connectivity returns
-3. **Conflict resolution** — when replaying queued mutations, timestamp-based last-write-wins for simple fields; administrator-mediated resolution for dining count conflicts (see [overview §3: Interactive Reconciliation](../01_overview.md))
+3. **Conflict resolution** — when replaying queued mutations, timestamp-based last-write-wins for simple fields; Lodge Secretary-mediated resolution for Dining count conflicts (see [overview §3: Interactive Reconciliation](../01_overview.md))
 4. **Connection status indicator** — always-visible UI element showing online/offline/reconnecting state. No silent failures
 5. **Service worker** — `vite-plugin-pwa` with Workbox for asset caching; app shell is fully available offline
 

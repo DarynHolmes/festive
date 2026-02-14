@@ -5,7 +5,7 @@
 
 ## Context
 
-The UGLE job spec mentions "utility-based CSS frameworks" and requires building accessible, responsive interfaces for both SPA and PWA. The user base spans ages 18-90+, making accessibility and usability non-negotiable.
+The UGLE job spec mentions "utility-based CSS frameworks" and requires building accessible, responsive interfaces for both SPA and PWA. The UGLE membership spans ages 18-90+, making accessibility and usability non-negotiable.
 
 Alternatives considered: Vuetify 3, PrimeVue, headless UI (Radix Vue / Headless UI) + Tailwind.
 
@@ -19,7 +19,7 @@ Alternatives considered: Vuetify 3, PrimeVue, headless UI (Radix Vue / Headless 
 - **Accessibility baseline** — Quasar components ship with keyboard navigation, ARIA attributes, and focus management. Not perfect (custom ARIA work is still needed — see [accessibility strategy](../04_accessibility.md)), but a strong foundation
 - **Responsive by default** — built-in breakpoint system and responsive utilities; critical for an app used on aging Lodge laptops and modern tablets alike
 - **PWA mode** — native `quasar dev -m pwa` support, though we use `vite-plugin-pwa` for finer control over service worker behaviour
-- **Material Design** — familiar visual language; reduces cognitive load for non-technical Lodge administrators
+- **Material Design** — familiar visual language; reduces cognitive load for Lodge Secretaries with varying technical literacy
 - **Treeshakeable** — only imports used components; keeps bundle size manageable
 
 ### Why not the alternatives
