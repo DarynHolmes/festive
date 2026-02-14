@@ -59,15 +59,40 @@ Avoid generic terms (e.g. "group" instead of "Lodge", "admin" instead of "Lodge 
     - Pages (containers): fetch data, orchestrate state
     - Components (presentational): receive props, emit events
 - Favour Vue slots to keep components flat, small, and reusable
-- Favour composition over inheritance 
- 
+- Favour composition over inheritance
+
+### Loading & Error States
+
+- Pages (containers) own async state via Pinia Colada's `{ data, error, isPending }`
+- Loading: `q-spinner-dots` with `role="status"` and `aria-label`; prefer skeleton placeholders (`q-skeleton`) to preserve layout and avoid screen jumps
+- Errors: `q-banner type="negative"` with `role="alert"` for inline errors
+- Quasar `Notify` plugin for transient feedback (toasts) — add to `plugins[]` when needed
+- Keep it simple — no retry/recovery patterns until complexity demands them
+
+### Routing
+
+- Hash-based history mode (PWA-friendly, no server config needed)
+- Flat route structure under `MainLayout` — one layout, pages as children
+- Lazy-loaded pages via dynamic imports (Quasar CLI default)
+- Named routes when parameterised routes arrive (e.g. `/lodges/:id`)
+
 ## Testing
 
 **Philosophy:** pragmatic test automation — meaningful tests, not coverage for coverage's sake. Write code that is easier to test (pure functions). Don't add tests because we can.
 
+**Principles:**
+- YAGNI — don't build abstractions until duplication demands them. Three similar lines beat a premature helper
+- Be pragmatic — choose the simplest approach that works; refactor when complexity earns its keep
+
 **Test types:**
 - Meaningful unit tests (co-located with the file under test, e.g. `mappers.test.ts` next to `mappers.ts`)
 - E2E / high-level tests
+
+**E2E organisation ([ADR-008](documentation/decisions/ADR-008-page-object-model.md)):**
+- Lightweight page helpers (functions + fixtures), not class-based Page Object Models
+- Extend `test` via `test.extend<T>()` for cross-cutting concerns (accessibility, auth, mock setup)
+- Domain helper functions in `e2e/helpers/` for shared interactions
+- Use semantic locators (`getByRole`, `getByText`) directly in tests — no abstraction layer needed
 
 **Quality characteristics:**
 - Independent and atomic — no test depends on another, run in any order
@@ -102,6 +127,7 @@ This is highly important for UGLE.
 
 ### UX
 
+- Calm, reassuring design — no jarring transitions, layout shifts, or aggressive alerts
 - Follow progressive disclosure where it makes sense
 
 ## Infrastructure

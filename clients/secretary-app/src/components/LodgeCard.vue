@@ -10,6 +10,9 @@
         {{ meetingLocation }}
       </div>
     </q-card-section>
+    <q-card-actions v-if="$slots.actions" align="right">
+      <slot name="actions" />
+    </q-card-actions>
   </q-card>
 </template>
 

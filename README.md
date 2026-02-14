@@ -28,12 +28,11 @@ On first run, create an admin account when prompted. Migrations in `pb_migration
 
 ### Seed Data
 
-Add a test lodge via the admin UI or curl:
+With PocketBase running, seed a test lodge, members, and dining records:
 
 ```bash
-curl -X POST http://127.0.0.1:8090/api/collections/lodges/records \
-  -H "Content-Type: application/json" \
-  -d '{"name": "Lodge of Harmony No. 255", "province": "Metropolitan", "meeting_location": "Freemasons Hall, London"}'
+cd clients/secretary-app
+node scripts/seed.js
 ```
 
 ### Start the Secretary App
@@ -64,13 +63,18 @@ The app reads `VITE_POCKETBASE_URL` from `.env.development` (defaults to `http:/
 | [003 — Offline-First](documentation/decisions/ADR-003-offline-first.md) | PWA with offline queue, optimistic updates, conflict resolution |
 | [004 — Quasar](documentation/decisions/ADR-004-quasar.md) | Quasar over Vuetify/PrimeVue/headless UI |
 | [005 — Async State](documentation/decisions/ADR-005-async-state.md) | Pinia Colada first, Vue Query as fallback |
+| [006 — Test Mocking](documentation/decisions/ADR-006-test-mocking-strategy.md) | Playwright built-in mocks over Mock Service Worker |
+| [007 — Histoire](documentation/decisions/ADR-007-histoire.md) | Histoire over Storybook for component showcase |
+| [008 — Page Helpers](documentation/decisions/ADR-008-page-object-model.md) | Lightweight page helpers over full Page Object Model |
 
 ### Requirements
 
-| Doc | Sprint |
-|-----|--------|
-| [Epic: Admin SPA Foundation](documentation/requirements/sprint-0/00_epic_setup.md) | Sprint 0 |
-| [Project Scaffolding](documentation/requirements/sprint-0/01_project_scaffolding.md) | Sprint 0 |
-| [State & PocketBase](documentation/requirements/sprint-0/02_state_and_pocketbase.md) | Sprint 0 |
-| [Testing & Quality](documentation/requirements/sprint-0/03_testing_and_quality.md) | Sprint 0 |
-| [Connectivity Resilience](documentation/requirements/deferred/connectivity_resilience.md) | Deferred |
+| Doc | Sprint | Status |
+|-----|--------|--------|
+| [Epic: Admin SPA Foundation](documentation/requirements/done/sprint-0/00_epic_setup.md) | Sprint 0 | Done |
+| [Project Scaffolding](documentation/requirements/done/sprint-0/01_project_scaffolding.md) | Sprint 0 | Done |
+| [State & PocketBase](documentation/requirements/done/sprint-0/02_state_and_pocketbase.md) | Sprint 0 | Done |
+| [Testing & Quality](documentation/requirements/done/sprint-0/03_testing_and_quality.md) | Sprint 0 | Done |
+| [Members Collection](documentation/requirements/done/sprint-1/00_members_collection.md) | Sprint 1 | Done |
+| [Real-time Attendance Toggling](documentation/requirements/done/sprint-1/01_realtime-attendance-toggling.md) | Sprint 1 | Done |
+| [Connectivity Resilience](documentation/requirements/todo/connectivity_resilience.md) | Todo |  |

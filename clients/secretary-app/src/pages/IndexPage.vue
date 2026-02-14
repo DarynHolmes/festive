@@ -17,7 +17,16 @@
         :name="lodge.name"
         :province="lodge.province"
         :meeting-location="lodge.meetingLocation"
-      />
+      >
+        <template #actions>
+          <q-btn
+            flat
+            color="primary"
+            label="Manage Dining"
+            :to="{ name: 'dining', params: { lodgeId: lodge.id } }"
+          />
+        </template>
+      </LodgeCard>
     </template>
 
     <p v-else>No lodges found. Add a lodge via the PocketBase admin panel.</p>
