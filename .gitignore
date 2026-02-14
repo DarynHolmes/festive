@@ -17,8 +17,9 @@ dist/
 !.env.example
 *.local
 
-# PocketBase binary
+# PocketBase
 pocketbase_0.36.3/pocketbase
+pocketbase_0.36.3/pb_data/
 
 # Logs
 npm-debug.log*

@@ -59,13 +59,14 @@ Avoid generic terms (e.g. "group" instead of "Lodge", "admin" instead of "Lodge 
     - Pages (containers): fetch data, orchestrate state
     - Components (presentational): receive props, emit events
 - Favour Vue slots to keep components flat, small, and reusable
-
+- Favour composition over inheritance 
+ 
 ## Testing
 
 **Philosophy:** pragmatic test automation — meaningful tests, not coverage for coverage's sake. Write code that is easier to test (pure functions). Don't add tests because we can.
 
 **Test types:**
-- Meaningful unit tests
+- Meaningful unit tests (co-located with the file under test, e.g. `mappers.test.ts` next to `mappers.ts`)
 - E2E / high-level tests
 
 **Quality characteristics:**
@@ -154,6 +155,7 @@ As the project progresses, keep `supporting-documentation/gemini-gem.md` up to d
 
 ## Do NOT
 
+- Code comments should explain **why**, not just **what** — the code itself shows what it does
 - Do not introduce spaghetti code
 - Do not let files get too long
 - Do not allow TS errors — make sure we are avoiding them
