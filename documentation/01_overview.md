@@ -1,5 +1,7 @@
 # Project: Festive Board Manager
+
 **Status:** Phase 1: Minimum Viable Insight (MVI)
+
 **Strategic Goal:** Bridging the gap between member check-in and administrative governance.
 
 ---

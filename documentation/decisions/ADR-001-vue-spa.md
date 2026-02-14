@@ -1,6 +1,7 @@
 # ADR-001: Vue 3 SPA with Composition API
 
 **Status:** Accepted
+
 **Date:** 2026-02-14
 
 ## Context

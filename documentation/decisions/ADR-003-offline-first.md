@@ -1,6 +1,7 @@
 # ADR-003: Offline-First PWA Strategy
 
 **Status:** Accepted
+
 **Date:** 2026-02-14
 
 ## Context

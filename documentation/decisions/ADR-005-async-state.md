@@ -1,6 +1,7 @@
 # ADR-005: Pinia Colada for Async State (Vue Query as Fallback)
 
 **Status:** Accepted (provisional)
+
 **Date:** 2026-02-14
 
 ## Context

@@ -1,6 +1,7 @@
 # Accessibility Strategy
 
 **Standard:** WCAG 2.2 AA
+
 **Membership:** Ages 18–90+, varying technical literacy, diverse devices
 
 Accessibility is not a feature — it's a constraint that shapes every design and implementation decision.

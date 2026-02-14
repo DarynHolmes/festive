@@ -1,6 +1,7 @@
 # ADR-002: PocketBase as Backend
 
 **Status:** Accepted
+
 **Date:** 2026-02-14
 
 ## Context

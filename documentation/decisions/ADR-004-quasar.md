@@ -1,6 +1,7 @@
 # ADR-004: Quasar as Component Framework
 
 **Status:** Accepted
+
 **Date:** 2026-02-14
 
 ## Context

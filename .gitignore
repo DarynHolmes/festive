@@ -1,3 +1,24 @@
+# OS
 .DS_Store
+
+# IDE
 .vscode/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.quasar/
+
+# Environment files (keep .env.example)
+.env
+.env.*
+!.env.example
+*.local
+
+# PocketBase binary
 pocketbase_0.36.3/pocketbase
+
+# Logs
+npm-debug.log*

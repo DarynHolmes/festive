@@ -128,6 +128,7 @@ This is highly important for UGLE.
 - Progressive disclosure — use technical terms, link to detailed docs only when it adds value
 - Mermaid diagrams encouraged (https://mermaid.ai/open-source/)
 - ASCII art as a fallback
+- **Blank lines between block elements** — markdown requires a blank line between headings, bold lines, paragraphs, lists, and other block-level elements for them to render on separate lines
 
 ## AI Usage
 
