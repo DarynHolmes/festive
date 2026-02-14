@@ -1,28 +1,22 @@
 # Component Design Rationale
 
 **Pattern:** Container pages, presentational components.
+
 **Goal:** Testable, reusable UI with clear data ownership.
 
 ---
 
 ## The Pattern
 
-```
-┌─────────────────────────────────────────────┐
-│  Page (container)                            │
-│  - Owns data fetching (composables/stores)  │
-│  - Orchestrates layout                      │
-│  - Handles navigation and side effects      │
-│                                             │
-│  ┌──────────────┐  ┌──────────────────────┐ │
-│  │ Component A  │  │ Component B          │ │
-│  │ (presentational)       │  │ (presentational)               │ │
-│  │ - Props in   │  │ - Props in           │ │
-│  │ - Events out │  │ - Events out         │ │
-│  │ - Slots for  │  │ - No store access    │ │
-│  │   flexibility│  │ - No service calls   │ │
-│  └──────────────┘  └──────────────────────┘ │
-└─────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Page["<b>Page (container)</b><br/>Owns data fetching via composables/stores<br/>Orchestrates layout<br/>Handles navigation and side effects"]
+
+    Page -->|"props ↓"| A["<b>Component A</b><br/><i>presentational</i><br/>Props in · Events out<br/>Slots for flexibility"]
+    Page -->|"props ↓"| B["<b>Component B</b><br/><i>presentational</i><br/>Props in · Events out<br/>No store access · No service calls"]
+
+    A -->|"events ↑"| Page
+    B -->|"events ↑"| Page
 ```
 
 ### Rules

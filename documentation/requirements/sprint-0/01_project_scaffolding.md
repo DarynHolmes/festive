@@ -13,9 +13,9 @@
 
 * **Legacy Browser Support:** Configure the Vite build target to support older Chromium-based browsers (e.g., Chrome 80+) commonly found on aging Lodge laptops.
 
-* **Project Structure:** Establish folder conventions aligned with Quasar defaults and the project's architectural principles (thick pages, slim components):
-  - `src/pages/` — smart pages that fetch data
-  - `src/components/` — dumb components using props/emits
+* **Project Structure:** Establish folder conventions aligned with Quasar defaults and the project's architectural principles (container pages, presentational components):
+  - `src/pages/` — container pages that fetch data and orchestrate state
+  - `src/components/` — presentational components using props/emits
   - `src/composables/` — shared composition functions
   - `src/stores/` — Pinia stores
   - `src/services/` — backend client wrappers
