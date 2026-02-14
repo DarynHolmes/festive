@@ -1,7 +1,10 @@
 import { toValue, type MaybeRefOrGetter } from 'vue';
 import { useMutation, useQueryCache } from '@pinia/colada';
-import { pb } from 'src/services/pocketbase';
-import type { DiningRecord, DiningStatus, DiningTableRow } from 'src/services/types';
+import {
+  updateDiningStatus,
+  createDiningRecord,
+} from 'src/services/dining-repository';
+import type { DiningEntry, DiningStatus, DiningTableRow } from 'src/services/types';
 
 interface ToggleVars {
   memberId: string;
@@ -20,20 +23,16 @@ export function useDiningMutation(lodgeId: MaybeRefOrGetter<string>) {
     return ['dining-dashboard', toValue(lodgeId)];
   }
 
-  return useMutation<DiningRecord, ToggleVars, Error, RollbackContext>({
+  return useMutation<DiningEntry, ToggleVars, Error, RollbackContext>({
     mutation: async ({ diningRecordId, memberId, newStatus }) => {
       if (diningRecordId) {
-        return pb
-          .collection('dining_records')
-          .update<DiningRecord>(diningRecordId, { status: newStatus });
+        return updateDiningStatus(diningRecordId, newStatus);
       }
 
-      return pb.collection('dining_records').create<DiningRecord>({
-        lodge_id: toValue(lodgeId),
-        member_id: memberId,
-        meeting_date: new Date().toISOString(),
+      return createDiningRecord({
+        lodgeId: toValue(lodgeId),
+        memberId,
         status: newStatus,
-        updated_by: 'secretary',
       });
     },
 
