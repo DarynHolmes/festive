@@ -80,7 +80,8 @@ This prototype is built by a three-person team: Daryn (developer), Gem (Gemini G
 
 | Guide | Coverage |
 |-------|----------|
-| [Offline Mutation Queuing](documentation/manual-testing/offline-mutation-queuing.md) | Reconnect → queue flush → sync flow, persistence across refresh, mid-sync disconnection |
+| [Offline Queue Sync](documentation/manual-testing/offline-queue-sync.md) | Reconnect → queue flush → sync flow, collapse, mid-sync disconnection |
+| [Accessibility](documentation/manual-testing/accessibility.md) | Screen reader announcements, keyboard navigation, text scaling |
 
 ### Requirements
 
