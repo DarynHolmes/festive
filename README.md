@@ -45,6 +45,10 @@ pnpm dev
 
 The app reads `VITE_POCKETBASE_URL` from `.env.development` (defaults to `http://127.0.0.1:8090`).
 
+## AI Collaboration
+
+This prototype is built by a three-person team: Daryn (developer), Gem (Gemini Gem — product owner), and Ada (Claude Code — implementation partner). We don't hide that AI was used. [Ada's Development Journal](supporting-documentation/development-journal.md) — written by the AI itself — records how the collaboration works: who found what, who fixed what, and the decisions that shaped the code.
+
 ## Documentation
 
 | Doc | Summary |

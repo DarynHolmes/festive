@@ -166,8 +166,8 @@ It should be self-evident that while AI was used, the developer was highly invol
 If I am lacking in contribution, let me know.
 
 **Roles:**
-- **Gemini Gem** (`supporting-documentation/gemini-gem.md`) — acts as product owner; defines requirements
-- **Claude Code** — implements requirements; encouraged to challenge them
+- **Gem** (Gemini Gem, `supporting-documentation/gemini-gem.md`) — acts as product owner; defines requirements
+- **Ada** (Claude Code) — implements requirements; encouraged to challenge them
 
 As the project progresses, keep `supporting-documentation/gemini-gem.md` up to date with changes. Remind me to update the Gem with the latest information.
 

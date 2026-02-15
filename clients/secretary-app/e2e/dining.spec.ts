@@ -1,117 +1,10 @@
 import { test, expect } from './fixtures';
-
-const LODGE_ID = 'test_lodge_001';
-
-const MOCK_MEMBERS_RESPONSE = {
-  page: 1,
-  perPage: 30,
-  totalPages: 1,
-  totalItems: 3,
-  items: [
-    {
-      id: 'mem_001',
-      lodge_id: LODGE_ID,
-      first_name: 'James',
-      last_name: 'Whitfield',
-      rank: 'W Bro',
-      status: 'active',
-      collectionId: 'pbc_3572739349',
-      collectionName: 'members',
-      created: '2026-01-01T00:00:00Z',
-      updated: '2026-01-01T00:00:00Z',
-    },
-    {
-      id: 'mem_002',
-      lodge_id: LODGE_ID,
-      first_name: 'Richard',
-      last_name: 'Pemberton',
-      rank: 'Bro',
-      status: 'active',
-      collectionId: 'pbc_3572739349',
-      collectionName: 'members',
-      created: '2026-01-01T00:00:00Z',
-      updated: '2026-01-01T00:00:00Z',
-    },
-    {
-      id: 'mem_003',
-      lodge_id: LODGE_ID,
-      first_name: 'George',
-      last_name: 'Sinclair',
-      rank: 'Bro',
-      status: 'active',
-      collectionId: 'pbc_3572739349',
-      collectionName: 'members',
-      created: '2026-01-01T00:00:00Z',
-      updated: '2026-01-01T00:00:00Z',
-    },
-  ],
-};
-
-const MOCK_DINING_RESPONSE = {
-  page: 1,
-  perPage: 30,
-  totalPages: 1,
-  totalItems: 3,
-  items: [
-    {
-      id: 'din_001',
-      lodge_id: LODGE_ID,
-      member_id: 'mem_001',
-      meeting_date: '2026-03-14T18:30:00Z',
-      status: 'dining',
-      updated_by: 'seed',
-      collectionId: 'pbc_2053535107',
-      collectionName: 'dining_records',
-      created: '2026-01-01T00:00:00Z',
-      updated: '2026-01-01T00:00:00Z',
-    },
-    {
-      id: 'din_002',
-      lodge_id: LODGE_ID,
-      member_id: 'mem_002',
-      meeting_date: '2026-03-14T18:30:00Z',
-      status: 'not_dining',
-      updated_by: 'seed',
-      collectionId: 'pbc_2053535107',
-      collectionName: 'dining_records',
-      created: '2026-01-01T00:00:00Z',
-      updated: '2026-01-01T00:00:00Z',
-    },
-    {
-      id: 'din_003',
-      lodge_id: LODGE_ID,
-      member_id: 'mem_003',
-      meeting_date: '2026-03-14T18:30:00Z',
-      status: 'undecided',
-      updated_by: 'seed',
-      collectionId: 'pbc_2053535107',
-      collectionName: 'dining_records',
-      created: '2026-01-01T00:00:00Z',
-      updated: '2026-01-01T00:00:00Z',
-    },
-  ],
-};
+import { LODGE_ID, MOCK_DINING_RESPONSE } from './helpers/mock-data';
+import { mockDiningRoutes } from './helpers/mock-routes';
 
 test.describe('Dining Dashboard', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('**/api/collections/members/records**', (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(MOCK_MEMBERS_RESPONSE),
-      }),
-    );
-
-    await page.route('**/api/collections/dining_records/records**', (route) => {
-      if (route.request().method() === 'GET') {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(MOCK_DINING_RESPONSE),
-        });
-      }
-      return route.continue();
-    });
+    await mockDiningRoutes(page);
   });
 
   test('renders members with their dining statuses', async ({ page }) => {
@@ -157,7 +50,7 @@ test.describe('Dining Dashboard', () => {
 
     // Find the toggle for Pemberton (currently not_dining) and click "Dining"
     const pembertonRow = page.getByRole('row').filter({ hasText: 'Pemberton' });
-    await pembertonRow.getByRole('radio', { name: 'Dining' }).click();
+    await pembertonRow.getByRole('button', { name: 'Dining', exact: true }).click();
 
     // UI should update optimistically before server responds
     await expect(page.getByText('2 dining')).toBeVisible();
@@ -182,12 +75,9 @@ test.describe('Dining Dashboard', () => {
     await expect(page.getByText('1 not dining')).toBeVisible();
 
     const pembertonRow = page.getByRole('row').filter({ hasText: 'Pemberton' });
-    await pembertonRow.getByRole('radio', { name: 'Dining' }).click();
+    await pembertonRow.getByRole('button', { name: 'Dining', exact: true }).click();
 
-    // Optimistic update shows briefly
-    await expect(page.getByText('2 dining')).toBeVisible();
-
-    // After server error, should roll back
+    // After server error, should roll back to original state
     await expect(page.getByText('1 not dining')).toBeVisible({ timeout: 5000 });
   });
 

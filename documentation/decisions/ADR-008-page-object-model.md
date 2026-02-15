@@ -34,7 +34,7 @@ Our test surface is currently small (2 spec files, single-page app) but is about
 Specifically:
 
 1. **Fixture extensions** for cross-cutting concerns — continue extending `test` via `test.extend<T>()` for capabilities like accessibility auditing, mock setup, or authenticated sessions
-2. **Domain helper functions** for repeated interactions — e.g. `mockLodgesApi(page, data)`, `toggleDiningStatus(page, memberName)`. Co-locate these in `e2e/helpers/` when they're shared, or keep them in the spec file when they're not
+2. **Domain helper functions** for repeated interactions — e.g. `mockLodgeRoutes(page)`, `toggleDiningStatus(page, memberName)`. Co-locate these in `e2e/helpers/` when they're shared, or keep them in the spec file when they're not. Write helpers for what tests need today — don't add parameters, overrides, or flexibility until a second caller demands it
 3. **Semantic locators over abstracted selectors** — prefer `page.getByRole()`, `page.getByText()`, and `page.getByTestId()` directly in tests. These are stable, readable, and don't benefit from an additional layer of indirection
 4. **Revisit if the app surface exceeds ~8 distinct views** — at that scale, the centralisation benefits of POM may outweigh the overhead
 
