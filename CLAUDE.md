@@ -171,6 +171,26 @@ If I am lacking in contribution, let me know.
 
 As the project progresses, keep `supporting-documentation/gemini-gem.md` up to date with changes. Remind me to update the Gem with the latest information.
 
+## Sprint Process
+
+**Sprints** are loose milestones, not fixed-length iterations. Daryn calls when a sprint starts and ends.
+
+**During a sprint:**
+- Work in small vertical slices so Daryn can manually test and review along the way
+- When planning a medium or large story, break it into individually testable tasks within the story's folder
+- Challenge requirements before work starts — flag potential issues, prerequisites, or gaps early
+- Log notable events to `supporting-documentation/development-journal.md` as they happen (bugs found, decisions made, direction changes) — but prototype and project docs take priority
+- At the start of each sprint and when starting a new story, review `documentation/requirements/todo/` — flag items that need doing or should be deferred
+
+**End of sprint (when Daryn calls it):**
+1. Consolidate and tidy journal entries for the sprint — keep them terse, fair, complete
+2. Update `supporting-documentation/done-features.md` with the sprint's deliverables
+3. Update `supporting-documentation/implementation-context.md` with the current technical state
+4. Update `supporting-documentation/gemini-gem.md` to keep Gem in sync
+5. Review `README.md` — ensure links and requirements table are up to date
+6. Review ADRs in `documentation/decisions/` — check any that say "revisit after X" and assess whether X has arrived
+7. Review `documentation/requirements/todo/` — flag or defer items
+
 ## Working with Claude Code
 
 - Raise concerns around anything that might not be received well by UGLE
