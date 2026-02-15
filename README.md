@@ -6,52 +6,13 @@ A real-time dining attendance tracker for Lodge meetings, built as a prototype f
 
 Lodge Secretaries need accurate, live dining numbers to manage catering and reduce financial waste. This application replaces paper-based counting with a digital system that works even in historic buildings with poor connectivity.
 
+## Live Demo
+
+**[festive-board-manager.vercel.app](https://festive-board-manager.vercel.app/)**
+
 ## Tech Stack
 
 Vue 3 (Composition API) · Quasar · TypeScript · Pinia · PocketBase · Playwright · PWA
-
-## Local Development
-
-### Prerequisites
-
-- Node.js 20+ with pnpm
-- PocketBase binary (included at `pocketbase_0.36.3/`)
-
-### Start PocketBase
-
-```bash
-cd pocketbase_0.36.3
-./pocketbase serve
-```
-
-PocketBase starts on `http://127.0.0.1:8090`. Admin UI: `http://127.0.0.1:8090/_/`.
-
-On first run, create an admin account when prompted. Migrations in `pb_migrations/` run automatically, creating the `lodges` and `dining_records` collections.
-
-### Seed Data
-
-With PocketBase running, seed 4 test lodges with members and dining records:
-
-```bash
-cd clients/secretary-app
-node scripts/seed.js
-```
-
-Requires temporarily opening Create rules on `lodges`, `members`, and `dining_records` in the PocketBase admin UI.
-
-### Start the Secretary App
-
-```bash
-cd clients/secretary-app
-pnpm install
-pnpm dev
-```
-
-The app reads `VITE_POCKETBASE_URL` from `.env.development` (defaults to `http://127.0.0.1:8090`).
-
-## AI Collaboration
-
-This prototype is built by a three-person team: Daryn (developer), Gem (Gemini Gem — product owner), and Ada (Claude Code — implementation partner). We don't hide that AI was used. [Ada's Development Journal](supporting-documentation/development-journal.md) — written by the AI itself — records how the collaboration works: who found what, who fixed what, and the decisions that shaped the code.
 
 ## Documentation
 
@@ -83,7 +44,11 @@ This prototype is built by a three-person team: Daryn (developer), Gem (Gemini G
 | [Offline Queue Sync](documentation/manual-testing/offline-queue-sync.md) | Reconnect → queue flush → sync flow, collapse, mid-sync disconnection |
 | [Accessibility](documentation/manual-testing/accessibility.md) | Screen reader announcements, keyboard navigation, text scaling |
 
-### Requirements
+## AI Collaboration
+
+This prototype is built by a three-person team: Daryn (developer), Gem (Gemini Gem — product owner), and Ada (Claude Code — implementation partner). We don't hide that AI was used. [Ada's Development Journal](supporting-documentation/development-journal.md) — written by the AI itself — records how the collaboration works: who found what, who fixed what, and the decisions that shaped the code.
+
+## Requirements
 
 | Doc | Sprint | Status |
 |-----|--------|--------|
@@ -96,3 +61,7 @@ This prototype is built by a three-person team: Daryn (developer), Gem (Gemini G
 | [Offline Awareness](documentation/requirements/done/sprint-2/01-offline-awareness.md) | Sprint 2 | Done |
 | [Offline Mutation Queuing](documentation/requirements/wip/sprint-3/01_offline-mutation-queing_local_persistence.md) | Sprint 3 | Done |
 | [Connectivity Resilience](documentation/requirements/done/sprint-3/connectivity_resilience.md) | Sprint 3 | Done |
+
+## Local Development
+
+See [Local Development Guide](documentation/local-development.md) for setup instructions.
