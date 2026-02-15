@@ -12,19 +12,30 @@
   >
     <template #body-cell-status="props">
       <q-td :props="props">
-        <q-btn-toggle
-          :model-value="props.row.status"
-          :options="statusOptions"
-          dense
-          no-caps
-          toggle-color="primary"
-          class="dining-toggle"
-          :aria-label="`Dining status for ${props.row.firstName} ${props.row.lastName}`"
-          @update:model-value="
-            (val: DiningStatus) =>
-              emit('toggle-status', props.row.memberId, val, props.row.diningRecordId)
-          "
-        />
+        <div class="row items-center justify-center no-wrap">
+          <q-btn-toggle
+            :model-value="props.row.status"
+            :options="statusOptions"
+            dense
+            no-caps
+            toggle-color="primary"
+            class="dining-toggle"
+            :aria-label="`Dining status for ${props.row.firstName} ${props.row.lastName}`"
+            @update:model-value="
+              (val: DiningStatus) =>
+                emit('toggle-status', props.row.memberId, val, props.row.diningRecordId)
+            "
+          />
+          <q-icon
+            name="sync"
+            color="grey-6"
+            size="sm"
+            class="q-ml-sm syncing-icon"
+            :class="{ 'syncing-icon--hidden': !pendingMemberIds.has(props.row.memberId) }"
+            :aria-label="pendingMemberIds.has(props.row.memberId) ? 'Syncing changes' : undefined"
+            :aria-hidden="!pendingMemberIds.has(props.row.memberId)"
+          />
+        </div>
       </q-td>
     </template>
   </q-table>
@@ -37,9 +48,10 @@ import type { DiningTableRow, DiningStatus } from 'src/services/types';
 interface Props {
   rows: DiningTableRow[];
   loading?: boolean;
+  pendingMemberIds?: Set<string>;
 }
 
-defineProps<Props>();
+const { pendingMemberIds = new Set<string>() } = defineProps<Props>();
 
 const emit = defineEmits<{
   'toggle-status': [
@@ -83,5 +95,19 @@ const statusOptions = [
 <style lang="scss" scoped>
 .dining-toggle {
   min-height: 44px;
+}
+
+.syncing-icon {
+  animation: spin 1.5s linear infinite;
+
+  &--hidden {
+    visibility: hidden;
+    animation: none;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

@@ -37,15 +37,14 @@ export function useRealtimeSync({
           `[Realtime] ${collection}: ${event.action}`,
           event.record,
         );
+        lodgeStore.setLastSyncedAt(new Date());
         onEvent?.(event);
       });
-      lodgeStore.setRealtimeConnected(true);
     } catch (error) {
       console.error(
         `[Realtime] Failed to subscribe to ${collection}:`,
         error,
       );
-      lodgeStore.setRealtimeConnected(false);
     }
   }
 
