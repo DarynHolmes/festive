@@ -144,3 +144,23 @@ One failed attempt: tried to increase the base font size to 16px (from Quasar's 
 **Summary chips layout** — Daryn asked to keep the dining/not-dining/undecided chips on one row on mobile. Removed the `flex-direction: column` mobile override; `flex-wrap: wrap` handles edge cases if the screen is very narrow.
 
 **Seed data expansion** — Expanded `scripts/seed.js` from 1 lodge to 4 lodges (Lodge of Harmony, Fortitude, Prudence, Cornerstone) across different provinces with 7–15 members each. Dining statuses now assigned with a realistic random distribution (~65% dining, ~20% not dining, ~15% undecided). Useful for testing the dashboard with multiple lodges and varied data volumes.
+
+---
+
+## Sprint 4: Interview Readiness
+
+**Spec:** `documentation/requirements/wip/sprint-4/00_epic.md`
+
+### Story 01 — Live Deployment
+
+Deployed the Secretary app to Vercel at `https://festive-board-manager.vercel.app/`. Straightforward configuration:
+
+- **Root directory:** `clients/secretary-app`, **build command:** `npx quasar build`, **output:** `dist/spa`
+- **Environment:** `VITE_POCKETBASE_URL` pointed at the PocketHost production instance
+- Hash-based routing worked out of the box — no Vercel rewrite rules needed
+
+Before deploying, Daryn created the production PocketBase instance on PocketHost and applied the migrations. Seeded production with the 4-lodge dataset using the existing seed script pointed at the production URL.
+
+**Git history reset** — Daryn decided to flatten the git history to a single commit before making the repo visible to the interview panel. Used an orphan branch to create a clean `main` with no development history.
+
+**Smoke test passed:** Lodge dashboard loads, dining toggles work, realtime sync works across tabs, offline queue behaviour verified. One observation: the sync success toast fires on all open tabs (via realtime event propagation) — expected behaviour, just not previously noticed with single-tab testing.

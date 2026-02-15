@@ -1,5 +1,7 @@
 # Festive Board Manager
 
+[![CI](https://github.com/DarynHolmes/festive/actions/workflows/ci.yml/badge.svg)](https://github.com/DarynHolmes/festive/actions/workflows/ci.yml)
+
 A real-time dining attendance tracker for Lodge meetings, built as a prototype for [UGLE](https://www.ugle.org.uk/).
 
 Lodge Secretaries need accurate, live dining numbers to manage catering and reduce financial waste. This application replaces paper-based counting with a digital system that works even in historic buildings with poor connectivity.
@@ -92,4 +94,4 @@ This prototype is built by a three-person team: Daryn (developer), Gem (Gemini G
 | [Real-time Attendance Toggling](documentation/requirements/done/sprint-1/01_realtime-attendance-toggling.md) | Sprint 1 | Done |
 | [Offline Awareness](documentation/requirements/done/sprint-2/01-offline-awareness.md) | Sprint 2 | Done |
 | [Offline Mutation Queuing](documentation/requirements/wip/sprint-3/01_offline-mutation-queing_local_persistence.md) | Sprint 3 | Done |
-| [Connectivity Resilience](documentation/requirements/todo/connectivity_resilience.md) | Todo | |
+| [Connectivity Resilience](documentation/requirements/done/sprint-3/connectivity_resilience.md) | Sprint 3 | Done |
