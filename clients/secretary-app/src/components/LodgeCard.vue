@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-mb-md">
+  <q-card>
     <q-card-section>
       <div class="text-h6">{{ name }}</div>
       <div class="text-subtitle2">{{ province }}</div>

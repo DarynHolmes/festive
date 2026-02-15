@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <h1 class="text-h4">Festive Board Dining</h1>
+    <h1 class="page-title">Festive Board Dining</h1>
 
     <div v-if="isPending" role="status">
       <q-skeleton type="rect" height="44px" class="q-mb-sm" />
@@ -12,10 +12,10 @@
     </q-banner>
 
     <template v-else-if="rows.length > 0">
-      <div class="q-mb-sm text-body1" aria-live="polite">
-        <q-badge outline color="green-10" class="q-mr-sm">{{ diningCount }} dining</q-badge>
-        <q-badge outline color="red-10" class="q-mr-sm">{{ notDiningCount }} not dining</q-badge>
-        <q-badge outline color="grey-8" class="q-mr-sm">{{ undecidedCount }} undecided</q-badge>
+      <div class="summary-chips q-mb-sm" aria-live="polite">
+        <q-chip outline color="positive" icon="check_circle" size="md">{{ diningCount }} dining</q-chip>
+        <q-chip outline color="blue-grey-6" icon="cancel" size="md">{{ notDiningCount }} not dining</q-chip>
+        <q-chip outline color="grey-7" icon="help_outline" size="md">{{ undecidedCount }} undecided</q-chip>
       </div>
 
       <div class="q-mb-md text-caption text-grey-7" role="status" aria-live="polite">
@@ -26,6 +26,8 @@
         :rows="rows"
         :loading="isPending"
         :pending-member-ids="pendingMemberIds"
+        :queued-member-ids="mutationQueueStore.queuedMemberIds"
+        :syncing-member-ids="mutationQueueStore.syncingMemberIds"
         @toggle-status="handleToggle"
       />
     </template>
@@ -41,6 +43,7 @@ import { useRoute } from 'vue-router';
 import { useDiningDashboardQuery } from 'src/composables/useDiningDashboardQuery';
 import { useDiningMutation } from 'src/composables/useDiningMutation';
 import { useLodgeStore } from 'stores/lodge-store';
+import { useMutationQueueStore } from 'stores/mutation-queue-store';
 import { formatTimeAgo } from 'src/utils/time';
 import DiningTable from 'components/DiningTable.vue';
 import type { DiningStatus } from 'src/services/types';
@@ -52,8 +55,18 @@ const { data, error, isPending } = useDiningDashboardQuery(lodgeId);
 const { mutate, pendingMemberIds } = useDiningMutation(lodgeId);
 
 const { lastSyncedAt } = storeToRefs(useLodgeStore());
+const mutationQueueStore = useMutationQueueStore();
 
-const rows = computed(() => data.value ?? []);
+const rows = computed(() => {
+  const baseRows = data.value ?? [];
+  const queued = mutationQueueStore.queuedMutations;
+  if (queued.length === 0) return baseRows;
+
+  return baseRows.map((row) => {
+    const mutation = queued.find((m) => m.memberId === row.memberId);
+    return mutation ? { ...row, status: mutation.newStatus } : row;
+  });
+});
 
 const diningCount = computed(() => rows.value.filter((r) => r.status === 'dining').length);
 const notDiningCount = computed(() => rows.value.filter((r) => r.status === 'not_dining').length);
@@ -81,3 +94,27 @@ function handleToggle(memberId: string, newStatus: DiningStatus, diningRecordId:
   mutate({ memberId, diningRecordId, newStatus });
 }
 </script>
+
+<style lang="scss" scoped>
+.page-title {
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0 0 16px;
+}
+
+.summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+@media (max-width: 599px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .summary-chips {
+    gap: 2px;
+  }
+}
+</style>

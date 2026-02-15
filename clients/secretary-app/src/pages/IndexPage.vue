@@ -10,7 +10,7 @@
       Failed to load lodge data. Check that PocketBase is running.
     </q-banner>
 
-    <template v-else-if="data && data.length > 0">
+    <div v-else-if="data && data.length > 0" class="lodge-grid">
       <LodgeCard
         v-for="lodge in data"
         :key="lodge.id"
@@ -27,7 +27,7 @@
           />
         </template>
       </LodgeCard>
-    </template>
+    </div>
 
     <p v-else>No lodges found. Add a lodge via the PocketBase admin panel.</p>
   </q-page>
@@ -39,3 +39,11 @@ import LodgeCard from 'components/LodgeCard.vue';
 
 const { data, error, isPending } = useLodgesQuery();
 </script>
+
+<style lang="scss" scoped>
+.lodge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+</style>

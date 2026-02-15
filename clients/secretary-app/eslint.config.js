@@ -67,6 +67,11 @@ export default defineConfigWithVueTs(
 
       // allow debugger during development only
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+      // Code complexity guardrails (Sprint-3 tech task / ADR-009)
+      complexity: ['warn', { max: 10 }],
+      'max-depth': ['warn', { max: 3 }],
+      'max-params': ['warn', { max: 4 }],
     },
   },
 

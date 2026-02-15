@@ -5,6 +5,13 @@ import {
   createDiningRecord,
 } from 'src/services/dining-repository';
 import type { DiningEntry, DiningStatus, DiningTableRow } from 'src/services/types';
+import { useLodgeStore } from 'stores/lodge-store';
+import { useMutationQueueStore } from 'stores/mutation-queue-store';
+import {
+  enqueueMutation,
+  getQueuedMemberIds,
+  getAllMutations,
+} from 'src/services/mutation-queue';
 
 interface ToggleVars {
   memberId: string;
@@ -18,6 +25,8 @@ interface RollbackContext {
 
 export function useDiningMutation(lodgeId: MaybeRefOrGetter<string>) {
   const queryCache = useQueryCache();
+  const lodgeStore = useLodgeStore();
+  const mutationQueueStore = useMutationQueueStore();
   const pendingMemberIds = ref(new Set<string>());
 
   function queryKey() {
@@ -26,6 +35,30 @@ export function useDiningMutation(lodgeId: MaybeRefOrGetter<string>) {
 
   const { mutate, ...rest } = useMutation<DiningEntry, ToggleVars, Error, RollbackContext>({
     mutation: async ({ diningRecordId, memberId, newStatus }) => {
+      // OFFLINE PATH — queue locally and return synthetic success
+      if (lodgeStore.connectionStatus !== 'connected') {
+        await enqueueMutation({
+          memberId,
+          diningRecordId,
+          lodgeId: toValue(lodgeId),
+          newStatus,
+          queuedAt: new Date().toISOString(),
+        });
+        mutationQueueStore.setQueuedState(
+          await getQueuedMemberIds(),
+          await getAllMutations(),
+        );
+        return {
+          id: diningRecordId ?? `pending_${memberId}`,
+          lodgeId: toValue(lodgeId),
+          memberId,
+          meetingDate: new Date().toISOString(),
+          status: newStatus,
+          updatedBy: 'secretary',
+        };
+      }
+
+      // ONLINE PATH — call PocketBase directly
       if (diningRecordId) {
         return updateDiningStatus(diningRecordId, newStatus);
       }

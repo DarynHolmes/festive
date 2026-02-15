@@ -43,6 +43,8 @@ export const useLodgeStore = defineStore('lodge', () => {
   };
 });
 
+// Pinia HMR: preserve store state across hot-reloads in dev.
+// import.meta.hot is only defined in dev mode — tree-shaken in production.
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useLodgeStore, import.meta.hot));
 }

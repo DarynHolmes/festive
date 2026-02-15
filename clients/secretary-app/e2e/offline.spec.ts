@@ -2,6 +2,17 @@ import { test, expect } from './fixtures';
 import { LODGE_ID, MOCK_DINING_RESPONSE } from './helpers/mock-data';
 import { mockDiningRoutes } from './helpers/mock-routes';
 
+/**
+ * Offline E2E tests.
+ *
+ * These tests mock API routes (no PocketBase server) and use Playwright's
+ * context.setOffline() to simulate connectivity changes. Because there is
+ * no real PocketBase SSE connection, we cannot reliably test the full
+ * reconnect → queue-flush → sync flow in E2E (the connection monitor polls
+ * pb.realtime.isConnected which never stabilises without a server).
+ * That flow is verified manually and covered by unit tests on the
+ * mutation-queue service.
+ */
 test.describe('Offline Awareness', () => {
   test.beforeEach(async ({ page }) => {
     await mockDiningRoutes(page);
@@ -102,6 +113,38 @@ test.describe('Offline Awareness', () => {
     await context.setOffline(true);
     await page.waitForTimeout(3000);
 
+    const results = await makeAxeBuilder().analyze();
+    expect(results.violations).toEqual([]);
+  });
+});
+
+test.describe('Offline Mutation Queuing', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockDiningRoutes(page);
+  });
+
+  test('queued state is accessible', async ({
+    page,
+    context,
+    makeAxeBuilder,
+  }) => {
+    await page.goto(`/#/dining/${LODGE_ID}`);
+    await expect(page.getByText('Festive Board Dining')).toBeVisible();
+
+    // Go offline and queue a mutation
+    await context.setOffline(true);
+    await expect(
+      page.getByRole('status', { name: /connection status/i }),
+    ).toContainText('Offline', { timeout: 5000 });
+
+    const pembertonRow = page.getByRole('row').filter({ hasText: 'Pemberton' });
+    await pembertonRow.getByRole('button', { name: 'Dining', exact: true }).click();
+
+    // Verify aria-label on clock icon
+    const queuedIcon = pembertonRow.getByLabel('Queued for sync');
+    await expect(queuedIcon).toBeVisible();
+
+    // Run axe-core with queued state active
     const results = await makeAxeBuilder().analyze();
     expect(results.violations).toEqual([]);
   });
