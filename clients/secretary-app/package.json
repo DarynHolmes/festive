@@ -52,8 +52,5 @@
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1",
     "pnpm": ">= 10.0.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "@parcel/watcher"]
   }
 }

@@ -40,7 +40,7 @@ I implemented the plan. Daryn tested each feature manually in the browser — th
 
 **Button jump on toggle** — Daryn reported buttons flickering and shifting on toggle. I traced it to the sync icon using `v-if`, which added/removed DOM elements inside a centred flex container. Switched to `visibility: hidden` to reserve space.
 
-### Architectural Decisions Driven by Daryn
+### Architectural Decisions
 
 **Removing redundant invalidation** — Daryn questioned why we had both `invalidateQueries` in `onSuccess` and realtime event invalidation. Good question — they were racing each other. I replaced the broad `invalidateQueries` with a targeted cache patch, which fixed the root cause.
 

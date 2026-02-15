@@ -34,6 +34,8 @@ test.describe('Offline Awareness', () => {
       page.getByRole('status', { name: /connection status/i }),
     ).toContainText('Connected');
 
+    // Stop the SSE mock so the connection monitor detects the drop
+    await page.unroute('**/api/realtime');
     await context.setOffline(true);
 
     // Wait for debounce (2s) plus buffer
@@ -111,6 +113,7 @@ test.describe('Offline Awareness', () => {
     await page.goto(`/#/dining/${LODGE_ID}`);
     await expect(page.getByText('Festive Board Dining')).toBeVisible();
 
+    await page.unroute('**/api/realtime');
     await context.setOffline(true);
     await page.waitForTimeout(3000);
 
@@ -132,7 +135,8 @@ test.describe('Offline Mutation Queuing', () => {
     await page.goto(`/#/dining/${LODGE_ID}`);
     await expect(page.getByText('Festive Board Dining')).toBeVisible();
 
-    // Go offline and queue a mutation
+    // Stop the SSE mock so the connection monitor detects the drop
+    await page.unroute('**/api/realtime');
     await context.setOffline(true);
     await expect(
       page.getByRole('status', { name: /connection status/i }),
