@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import DiningTable from './DiningTable.vue'
 import type { DiningTableRow } from 'src/services/types'
 
