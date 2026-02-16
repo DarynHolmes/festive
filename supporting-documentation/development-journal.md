@@ -164,3 +164,28 @@ Before deploying, Daryn created the production PocketBase instance on PocketHost
 **Git history reset** — Daryn decided to flatten the git history to a single commit before making the repo visible to the interview panel. Used an orphan branch to create a clean `main` with no development history.
 
 **Smoke test passed:** Lodge dashboard loads, dining toggles work, realtime sync works across tabs, offline queue behaviour verified. One observation: the sync success toast fires on all open tabs (via realtime event propagation) — expected behaviour, just not previously noticed with single-tab testing.
+
+### Story 02 — GitHub Actions CI
+
+Created `.github/workflows/ci.yml` — lint, unit tests, build, Playwright E2E on every push to `main` and all PRs. Took four CI runs to get green. The debugging was instructive:
+
+1. **Run 1–2:** All 14 E2E tests timed out. Initially suspected pnpm 10's `onlyBuiltDependencies` blocking esbuild — a red herring. The real issue: Vite's dev server returns HTTP 200 (HTML shell) before JS bundles compile. On CI hardware, Playwright thought the server was ready but Vue never mounted. **Fix:** Build first, serve static files with `http-server`.
+
+2. **Run 3:** Still blank pages. Daryn installed the `gh` CLI (via Homebrew) and authenticated it so I could use it for CI debugging — checking workflow run logs and statuses directly from the terminal rather than asking Daryn to relay information from the GitHub UI. Practical time-saver Downloaded the Playwright trace artifact and inspected the screenshot — completely white. The network trace showed all assets loading with 200, but a console error revealed the cause: `VITE_POCKETBASE_URL is not defined`. The `.env.*` files are gitignored, so CI had no environment variables at all. Daryn flagged this possibility early — I should have listened. **Fix:** Set `VITE_POCKETBASE_URL` on the Build step.
+
+3. **Run 4:** 10/14 passed. The remaining 4 failures: the connection badge showed "Offline" because there's no PocketBase server in CI, so the SSE subscription failed. **Fix:** Mocked the PocketBase realtime SSE endpoint in test setup (`mockRealtimeConnection`), with `page.unroute()` before `context.setOffline()` so the connection monitor correctly detects the drop.
+
+Key lesson: trace artifacts are invaluable for CI debugging — the screenshot and console error in the trace pinpointed the env var issue instantly.
+
+
+
+### Story 03 — Histoire Component Showcase
+
+Set up Histoire for the Quasar + Vue 3 project. The install itself was straightforward (`histoire` + `@histoire/plugin-vue`), but integrating with Quasar required manual plumbing that Quasar's own CLI normally handles:
+
+- **Vue plugin:** Histoire runs its own Vite instance, separate from Quasar's `@quasar/app-vite` pipeline. Had to add `@vitejs/plugin-vue` explicitly — Quasar bundles it internally but doesn't expose it for external tools.
+- **SCSS variables:** Quasar auto-injects `$primary`, `$secondary` etc. into every SCSS file. Histoire doesn't get this. Configured `css.preprocessorOptions.scss` with `additionalData` and `loadPaths` to inject `quasar.variables.scss`.
+- **SSR guard:** Histoire's story collection runs server-side (Node). Quasar's client-side install crashes in that context — guarded with `import.meta.env.SSR`.
+- **Quasar as Vue plugin:** Used `app.use(Quasar, { config: {}, plugins: { Notify } })` in the setup file to register components and plugins manually.
+
+Created stories for `LodgeCard` (3 variants: default, with meeting location, with actions slot) and `DiningTable` (4 variants: loading, empty, mixed statuses, sync badges). Mock data uses realistic UGLE names and ranks.

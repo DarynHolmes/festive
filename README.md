@@ -10,9 +10,11 @@ Lodge Secretaries need accurate, live dining numbers to manage catering and redu
 
 **[festive-board-manager.vercel.app](https://festive-board-manager.vercel.app/)**
 
+**[Component Showcase (Histoire)](https://festive-board-manager-histoire.vercel.app/)**
+
 ## Tech Stack
 
-Vue 3 (Composition API) · Quasar · TypeScript · Pinia · PocketBase · Playwright · PWA
+Vue 3 (Composition API) · Quasar · TypeScript · Pinia · PocketBase · Playwright · Histoire · PWA
 
 ## Documentation
 
