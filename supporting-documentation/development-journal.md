@@ -18,6 +18,16 @@ Gem defines the requirements — user stories, acceptance criteria, edge cases �
 
 ### Sprint Flow
 
+```mermaid
+graph LR
+    Gem["Gem<br/><i>requirements</i>"] -->|stories & acceptance criteria| Prep["Prepare<br/><i>wip/ folder</i>"]
+    Prep --> Review["Review &<br/>Breakdown<br/><i>Ada + Daryn</i>"]
+    Review -->|gaps found| Gem
+    Review -->|stories agreed| Build["Build<br/><i>Ada implements<br/>Daryn QAs</i>"]
+    Build --> Sprint["End of<br/>Sprint<br/><i>docs & cleanup</i>"]
+    Sprint -->|updated context| Gem
+```
+
 1. **Requirements** — Daryn gets the next set of requirements from Gem and prepares them in the `documentation/requirements/wip/` folder, organised by sprint.
 
 2. **Story review & breakdown** — Ada and Daryn review the stories together. For larger features we break them into individually testable tasks within the story folder (Sprint 3's offline queuing feature had nine task files, for example). We challenge requirements early — gaps, prerequisites, and feasibility questions get raised before code starts.
