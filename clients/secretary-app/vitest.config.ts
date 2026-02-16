@@ -13,5 +13,7 @@ export default defineConfig({
     globals: false,
     environment: 'node',
     exclude: ['e2e/**', 'node_modules/**'],
+    reporters: ['default', 'json'],
+    outputFile: { json: 'test-results/unit.json' },
   },
 });

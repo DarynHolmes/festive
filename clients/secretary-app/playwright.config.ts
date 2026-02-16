@@ -10,7 +10,7 @@ export default defineConfig({
   // Spread (not ternary) because `exactOptionalPropertyTypes` forbids `undefined`
   // for a property typed as `string | number`.
   ...(process.env.CI ? { workers: 1 } : {}),
-  reporter: 'html',
+  reporter: [['html'], ['json', { outputFile: 'test-results/e2e.json' }]],
 
   use: {
     baseURL: 'http://localhost:9000',

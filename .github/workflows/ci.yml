@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -32,12 +35,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        id: lint
+        run: pnpm lint 2>&1 | tee lint-output.txt
 
       - name: Unit tests
+        id: unit
         run: pnpm test:unit
 
       - name: Build
+        id: build
         run: pnpm build
         env:
           VITE_POCKETBASE_URL: http://localhost:8090
@@ -46,7 +52,332 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: E2E tests
+        id: e2e
         run: pnpm test:e2e
+
+      - name: Job summary
+        if: ${{ !cancelled() }}
+        env:
+          LINT_OUTCOME: ${{ steps.lint.outcome }}
+          UNIT_OUTCOME: ${{ steps.unit.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          E2E_OUTCOME: ${{ steps.e2e.outcome }}
+        run: |
+          echo "## CI Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| | Check | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|---|" >> "$GITHUB_STEP_SUMMARY"
+
+          # --- Lint ---
+          if [ "$LINT_OUTCOME" = "success" ]; then
+            echo "| :white_check_mark: | Lint | Passed |" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$LINT_OUTCOME" = "failure" ]; then
+            echo "| :x: | Lint | Failed |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| :next_track_button: | Lint | Skipped |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # --- Unit Tests ---
+          if [ "$UNIT_OUTCOME" = "success" ] || [ "$UNIT_OUTCOME" = "failure" ]; then
+            if [ -f test-results/unit.json ]; then
+              PASSED=$(jq '.numPassedTests' test-results/unit.json)
+              FAILED=$(jq '.numFailedTests' test-results/unit.json)
+              TOTAL=$(jq '.numTotalTests' test-results/unit.json)
+              if [ "$FAILED" = "0" ]; then
+                echo "| :white_check_mark: | Unit Tests | $PASSED passed |" >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "| :x: | Unit Tests | $PASSED passed, $FAILED failed of $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+              fi
+            else
+              echo "| :x: | Unit Tests | Failed (no report) |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "| :next_track_button: | Unit Tests | Skipped |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # --- Build ---
+          if [ "$BUILD_OUTCOME" = "success" ]; then
+            echo "| :white_check_mark: | Build | Passed |" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$BUILD_OUTCOME" = "failure" ]; then
+            echo "| :x: | Build | Failed |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| :next_track_button: | Build | Skipped |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # --- E2E Tests ---
+          if [ "$E2E_OUTCOME" = "success" ] || [ "$E2E_OUTCOME" = "failure" ]; then
+            if [ -f test-results/e2e.json ]; then
+              EXPECTED=$(jq '.stats.expected' test-results/e2e.json)
+              UNEXPECTED=$(jq '.stats.unexpected' test-results/e2e.json)
+              FLAKY=$(jq '.stats.flaky' test-results/e2e.json)
+              DURATION_MS=$(jq '.stats.duration' test-results/e2e.json)
+              DURATION=$(awk "BEGIN {printf \"%.1f\", $DURATION_MS / 1000}")
+              if [ "$UNEXPECTED" = "0" ]; then
+                EXTRA=""
+                if [ "$FLAKY" != "0" ]; then EXTRA=" ($FLAKY flaky)"; fi
+                echo "| :white_check_mark: | E2E Tests | $EXPECTED passed${EXTRA} (${DURATION}s) |" >> "$GITHUB_STEP_SUMMARY"
+              else
+                TOTAL=$((EXPECTED + UNEXPECTED + FLAKY))
+                echo "| :x: | E2E Tests | $UNEXPECTED failed, $EXPECTED passed of $TOTAL (${DURATION}s) |" >> "$GITHUB_STEP_SUMMARY"
+              fi
+            else
+              echo "| :x: | E2E Tests | Failed (no report) |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "| :next_track_button: | E2E Tests | Skipped |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # --- Failure Details ---
+          HAS_FAILURES=false
+
+          if [ "$LINT_OUTCOME" = "failure" ] && [ -f lint-output.txt ]; then
+            HAS_FAILURES=true
+          fi
+          if [ -f test-results/unit.json ] && [ "$(jq '.numFailedTests' test-results/unit.json)" != "0" ]; then
+            HAS_FAILURES=true
+          fi
+          if [ -f test-results/e2e.json ] && [ "$(jq '.stats.unexpected' test-results/e2e.json)" != "0" ]; then
+            HAS_FAILURES=true
+          fi
+
+          if [ "$HAS_FAILURES" = "true" ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Failure Details" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+
+            if [ "$LINT_OUTCOME" = "failure" ] && [ -f lint-output.txt ]; then
+              echo "<details><summary>Lint errors</summary>" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              tail -30 lint-output.txt >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "</details>" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            fi
+
+            if [ -f test-results/unit.json ] && [ "$(jq '.numFailedTests' test-results/unit.json)" != "0" ]; then
+              echo "<details><summary>Failed unit tests</summary>" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              jq -r '.testResults[].assertionResults[] | select(.status == "failed") | "- \(.ancestorTitles | join(" > ")) > \(.title)"' test-results/unit.json >> "$GITHUB_STEP_SUMMARY"
+              echo "</details>" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            fi
+
+            if [ -f test-results/e2e.json ] && [ "$(jq '.stats.unexpected' test-results/e2e.json)" != "0" ]; then
+              echo "<details><summary>Failed E2E tests</summary>" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "See the Playwright HTML report for full details including screenshots and traces." >> "$GITHUB_STEP_SUMMARY"
+              echo "</details>" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+
+      - name: Generate test dashboard
+        if: ${{ !cancelled() }}
+        env:
+          LINT_OUTCOME: ${{ steps.lint.outcome }}
+          UNIT_OUTCOME: ${{ steps.unit.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          E2E_OUTCOME: ${{ steps.e2e.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          COMMIT_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          mkdir -p dashboard
+
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+          SHORT_SHA=${COMMIT_SHA:0:7}
+
+          # --- Overall status ---
+          if [ "$LINT_OUTCOME" = "success" ] && [ "$UNIT_OUTCOME" = "success" ] && \
+             [ "$BUILD_OUTCOME" = "success" ] && [ "$E2E_OUTCOME" = "success" ]; then
+            OVERALL_CLASS="pass"
+            OVERALL_TEXT="All Checks Passed"
+          else
+            OVERALL_CLASS="fail"
+            OVERALL_TEXT="Checks Failed"
+          fi
+
+          # --- Status helper ---
+          status_icon() {
+            case "$1" in
+              success) echo '&#x2713;' ;;
+              failure) echo '&#x2717;' ;;
+              *)       echo '&#x2014;' ;;
+            esac
+          }
+          status_class() {
+            case "$1" in
+              success) echo 'pass' ;;
+              failure) echo 'fail' ;;
+              *)       echo 'skip' ;;
+            esac
+          }
+
+          # --- Unit test details ---
+          UNIT_DETAIL="Skipped"
+          if [ "$UNIT_OUTCOME" = "success" ] || [ "$UNIT_OUTCOME" = "failure" ]; then
+            if [ -f test-results/unit.json ]; then
+              U_PASSED=$(jq '.numPassedTests' test-results/unit.json)
+              U_FAILED=$(jq '.numFailedTests' test-results/unit.json)
+              U_TOTAL=$(jq '.numTotalTests' test-results/unit.json)
+              if [ "$U_FAILED" = "0" ]; then
+                UNIT_DETAIL="$U_PASSED passed"
+              else
+                UNIT_DETAIL="$U_PASSED passed, $U_FAILED failed of $U_TOTAL"
+              fi
+            else
+              UNIT_DETAIL="Failed (no report)"
+            fi
+          fi
+
+          # --- E2E test details ---
+          E2E_DETAIL="Skipped"
+          E2E_EXTRA=""
+          if [ "$E2E_OUTCOME" = "success" ] || [ "$E2E_OUTCOME" = "failure" ]; then
+            if [ -f test-results/e2e.json ]; then
+              E_EXPECTED=$(jq '.stats.expected' test-results/e2e.json)
+              E_UNEXPECTED=$(jq '.stats.unexpected' test-results/e2e.json)
+              E_FLAKY=$(jq '.stats.flaky' test-results/e2e.json)
+              E_DURATION_MS=$(jq '.stats.duration' test-results/e2e.json)
+              E_DURATION=$(awk "BEGIN {printf \"%.1f\", $E_DURATION_MS / 1000}")
+              if [ "$E_UNEXPECTED" = "0" ]; then
+                FLAKY_NOTE=""
+                if [ "$E_FLAKY" != "0" ]; then FLAKY_NOTE=" ($E_FLAKY flaky)"; fi
+                E2E_DETAIL="$E_EXPECTED passed${FLAKY_NOTE} (${E_DURATION}s)"
+              else
+                E_TOTAL=$((E_EXPECTED + E_UNEXPECTED + E_FLAKY))
+                E2E_DETAIL="$E_UNEXPECTED failed, $E_EXPECTED passed of $E_TOTAL (${E_DURATION}s)"
+              fi
+              E2E_EXTRA='<a href="./playwright-report/index.html">View Playwright report</a>'
+            else
+              E2E_DETAIL="Failed (no report)"
+            fi
+          fi
+
+          # --- Failure details ---
+          FAILURES=""
+
+          if [ "$LINT_OUTCOME" = "failure" ] && [ -f lint-output.txt ]; then
+            LINT_ERRORS=$(tail -30 lint-output.txt | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')
+            FAILURES="${FAILURES}<details><summary>Lint errors</summary><pre>${LINT_ERRORS}</pre></details>"
+          fi
+
+          if [ -f test-results/unit.json ] && [ "$(jq '.numFailedTests' test-results/unit.json)" != "0" ]; then
+            FAILED_UNITS=$(jq -r '.testResults[].assertionResults[] | select(.status == "failed") | .ancestorTitles + [.title] | join(" &gt; ")' test-results/unit.json | sed 's/&/\&amp;/g' | while IFS= read -r line; do echo "<li>${line}</li>"; done)
+            FAILURES="${FAILURES}<details><summary>Failed unit tests</summary><ul>${FAILED_UNITS}</ul></details>"
+          fi
+
+          if [ -f test-results/e2e.json ] && [ "$(jq '.stats.unexpected' test-results/e2e.json)" != "0" ]; then
+            FAILURES="${FAILURES}<details><summary>Failed E2E tests</summary><p>See the <a href=\"./playwright-report/index.html\">Playwright HTML report</a> for screenshots and traces.</p></details>"
+          fi
+
+          FAILURE_SECTION=""
+          if [ -n "$FAILURES" ]; then
+            FAILURE_SECTION="<section class=\"failures\" aria-label=\"Failure details\"><h2>Failure Details</h2>${FAILURES}</section>"
+          fi
+
+          # --- Write dashboard HTML ---
+          cat > dashboard/index.html << HTMLEOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>CI Results — Festive Board Manager</title>
+            <style>
+              *, *::before, *::after { box-sizing: border-box; }
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                margin: 0; padding: 2rem 1rem; background: #fafafa; color: #1a1a1a;
+                line-height: 1.5; font-size: 16px;
+              }
+              .container { max-width: 700px; margin: 0 auto; }
+              h1 { margin: 0 0 0.25rem; font-size: 1.5rem; }
+              .subtitle { margin: 0 0 1.5rem; color: #555; font-size: 0.95rem; }
+              .overall {
+                padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 2rem;
+                font-size: 1.25rem; font-weight: 600; text-align: center;
+              }
+              .overall.pass { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+              .overall.fail { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+              .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+              @media (max-width: 600px) { .checks { grid-template-columns: 1fr; } }
+              .card {
+                background: #fff; border-radius: 8px; padding: 1.25rem;
+                border: 1px solid #e0e0e0; display: flex; flex-direction: column; gap: 0.5rem;
+              }
+              .card h2 { margin: 0; font-size: 1rem; color: #333; }
+              .card .icon { font-size: 1.75rem; }
+              .card .detail { margin: 0; color: #555; font-size: 0.9rem; }
+              .card a { font-size: 0.85rem; }
+              .card.pass .icon { color: #2e7d32; }
+              .card.fail .icon { color: #c62828; }
+              .card.skip .icon { color: #757575; }
+              .meta { color: #666; font-size: 0.85rem; margin-bottom: 2rem; }
+              .meta p { margin: 0.25rem 0; }
+              .meta a { color: #1565c0; }
+              .meta code { background: #f5f5f5; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85rem; }
+              .failures { margin-bottom: 2rem; }
+              .failures h2 { font-size: 1.1rem; margin: 0 0 0.75rem; color: #c62828; }
+              .failures details { margin-bottom: 0.5rem; }
+              .failures summary { cursor: pointer; font-weight: 500; padding: 0.5rem 0; }
+              .failures pre {
+                background: #f5f5f5; padding: 1rem; border-radius: 6px;
+                overflow-x: auto; font-size: 0.8rem; line-height: 1.4; margin: 0.5rem 0 0;
+              }
+              .failures ul { margin: 0.5rem 0 0; padding-left: 1.5rem; }
+              .failures li { font-size: 0.85rem; margin-bottom: 0.25rem; }
+              footer { border-top: 1px solid #e0e0e0; padding-top: 1rem; color: #999; font-size: 0.8rem; }
+              footer a { color: #999; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <header>
+                <h1>CI Results</h1>
+                <p class="subtitle">Festive Board Manager</p>
+                <div class="overall ${OVERALL_CLASS}">${OVERALL_TEXT}</div>
+              </header>
+              <main>
+                <div class="checks">
+                  <div class="card $(status_class "$LINT_OUTCOME")">
+                    <span class="icon" aria-hidden="true">$(status_icon "$LINT_OUTCOME")</span>
+                    <h2>Lint</h2>
+                    <p class="detail">$([ "$LINT_OUTCOME" = "success" ] && echo "Passed" || ([ "$LINT_OUTCOME" = "failure" ] && echo "Failed" || echo "Skipped"))</p>
+                  </div>
+                  <div class="card $(status_class "$UNIT_OUTCOME")">
+                    <span class="icon" aria-hidden="true">$(status_icon "$UNIT_OUTCOME")</span>
+                    <h2>Unit Tests</h2>
+                    <p class="detail">${UNIT_DETAIL}</p>
+                  </div>
+                  <div class="card $(status_class "$BUILD_OUTCOME")">
+                    <span class="icon" aria-hidden="true">$(status_icon "$BUILD_OUTCOME")</span>
+                    <h2>Build</h2>
+                    <p class="detail">$([ "$BUILD_OUTCOME" = "success" ] && echo "Passed" || ([ "$BUILD_OUTCOME" = "failure" ] && echo "Failed" || echo "Skipped"))</p>
+                  </div>
+                  <div class="card $(status_class "$E2E_OUTCOME")">
+                    <span class="icon" aria-hidden="true">$(status_icon "$E2E_OUTCOME")</span>
+                    <h2>E2E Tests</h2>
+                    <p class="detail">${E2E_DETAIL}</p>
+                    ${E2E_EXTRA}
+                  </div>
+                </div>
+                <div class="meta">
+                  <p>Branch: <code>${BRANCH}</code> &middot; Commit: <code><a href="${COMMIT_URL}">${SHORT_SHA}</a></code></p>
+                  <p>Generated: ${TIMESTAMP}</p>
+                  <p><a href="${RUN_URL}">View full CI run on GitHub Actions</a></p>
+                </div>
+                ${FAILURE_SECTION}
+              </main>
+              <footer>
+                <a href="https://github.com/DarynHolmes/festive">Festive Board Manager</a>
+              </footer>
+            </div>
+          </body>
+          </html>
+          HTMLEOF
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
@@ -55,3 +386,20 @@ jobs:
           name: playwright-report
           path: clients/secretary-app/playwright-report/
           retention-days: 14
+
+      - name: Prepare GitHub Pages deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !cancelled()
+        run: |
+          mkdir -p gh-pages-deploy
+          cp dashboard/index.html gh-pages-deploy/
+          if [ -d playwright-report ]; then
+            cp -r playwright-report gh-pages-deploy/playwright-report
+          fi
+
+      - name: Deploy test dashboard to GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !cancelled()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: clients/secretary-app/gh-pages-deploy
+          force_orphan: true

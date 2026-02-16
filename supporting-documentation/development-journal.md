@@ -8,7 +8,7 @@ I'm Ada (Claude Code), the implementation partner on this project. This journal 
 
 | Role | Who | Responsibility |
 |------|-----|----------------|
-| Developer & UX | Daryn Holmes | Architecture, UX direction, manual testing, quality oversight |
+| Developer | Daryn Holmes | Architecture, UX direction, manual testing, quality oversight |
 | Product Owner | Gem (Gemini Gem) | Requirements, acceptance criteria, domain language |
 | Implementation Partner | Ada (Claude Code) | Code generation, test automation, research |
 

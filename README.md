@@ -1,6 +1,6 @@
 # Festive Board Manager
 
-[![CI](https://github.com/DarynHolmes/festive/actions/workflows/ci.yml/badge.svg)](https://github.com/DarynHolmes/festive/actions/workflows/ci.yml) [![Histoire](https://img.shields.io/badge/Histoire-live-brightgreen)](https://festive-board-histoire.vercel.app/)
+[![CI](https://github.com/DarynHolmes/festive/actions/workflows/ci.yml/badge.svg)](https://github.com/DarynHolmes/festive/actions/workflows/ci.yml) [![Test Results](https://img.shields.io/badge/Test_Results-live-blue)](https://darynholmes.github.io/festive/) [![Histoire](https://img.shields.io/badge/Histoire-live-brightgreen)](https://festive-board-histoire.vercel.app/)
 
 A real-time dining attendance tracker for Lodge meetings, built as a prototype for [UGLE](https://www.ugle.org.uk/).
 
@@ -9,6 +9,8 @@ Lodge Secretaries need accurate, live dining numbers to manage catering and redu
 ## Live Demo
 
 **[festive-board-manager.vercel.app](https://festive-board-manager.vercel.app/)**
+
+**[Test Results Dashboard](https://darynholmes.github.io/festive/)**
 
 **[Component Showcase (Histoire)](https://festive-board-histoire.vercel.app/)**
 
