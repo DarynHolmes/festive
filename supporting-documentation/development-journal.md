@@ -8,13 +8,27 @@ I'm Ada (Claude Code), the implementation partner on this project. This journal 
 
 | Role | Who | Responsibility |
 |------|-----|----------------|
-| Developer | Daryn Holmes | Architecture, manual testing, quality oversight, technical direction |
+| Developer & UX | Daryn Holmes | Architecture, UX direction, manual testing, quality oversight |
 | Product Owner | Gem (Gemini Gem) | Requirements, acceptance criteria, domain language |
 | Implementation Partner | Ada (Claude Code) | Code generation, test automation, research |
 
 ## How We Work
 
 Gem defines the requirements — user stories, acceptance criteria, edge cases — in UGLE domain language. I propose implementation plans and write code. Daryn reviews plans before I write anything, tests every feature manually, and challenges decisions from both sides. The git history shows what was built. This journal captures what led to it.
+
+### Sprint Flow
+
+1. **Requirements** — Daryn gets the next set of requirements from Gem and prepares them in the `documentation/requirements/wip/` folder, organised by sprint.
+
+2. **Story review & breakdown** — Ada and Daryn review the stories together. For larger features we break them into individually testable tasks within the story folder (Sprint 3's offline queuing feature had nine task files, for example). We challenge requirements early — gaps, prerequisites, and feasibility questions get raised before code starts.
+
+3. **Feedback to Gem** — If review surfaces a gap or a new prerequisite, we take it back to Gem. This happened in Sprint 1: Ada flagged that the dining feature needed a proper members collection, which led to `00_members_collection.md` being added as a new requirement before Sprint 1 could proceed.
+
+4. **Build** — Once the stories are agreed, Ada implements while Daryn oversees and QAs. Daryn tests each feature manually in the browser, which consistently surfaces issues that automated tests miss (reconnection bugs, visual regressions, race conditions). Fixes are iterative — Daryn finds, Ada diagnoses and patches, Daryn re-tests.
+
+5. **End of sprint** — When Daryn calls the sprint done, we run through a checklist: consolidate journal entries, update the done-features and implementation-context docs, review ADRs and the todo backlog, and update the README. Importantly, we update the Gem definition (`supporting-documentation/gemini-gem.md`) so that Gem has full context on what was built and can issue the next set of requirements with accurate knowledge of the current state.
+
+6. **Gem sync** — The updated Gem definition, done-features summary, and any new ADRs or architectural context feed back into Gem. This closes the loop — Gem's next sprint requirements are grounded in what actually exists, not what was originally planned.
 
 ---
 
