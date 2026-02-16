@@ -20,6 +20,7 @@ Vue 3 (Composition API) · Quasar · TypeScript · Pinia · PocketBase · Playwr
 
 | Doc | Summary |
 |-----|---------|
+| [TLDR](documentation/TLDR.md) | 5-minute guided tour for the interview panel |
 | [Overview](documentation/01_overview.md) | Problem frame, success criteria, strategic roadmap |
 | [Architecture](documentation/02_architecture.md) | System context, client layers, data flow, data model, deployment |
 | [Component Design](documentation/03_component_design.md) | Container pages, presentational components — pattern with concrete example |
@@ -61,8 +62,9 @@ This prototype is built by a three-person team: Daryn (developer), Gem (Gemini G
 | [Members Collection](documentation/requirements/done/sprint-1/00_members_collection.md) | Sprint 1 | Done |
 | [Real-time Attendance Toggling](documentation/requirements/done/sprint-1/01_realtime-attendance-toggling.md) | Sprint 1 | Done |
 | [Offline Awareness](documentation/requirements/done/sprint-2/01-offline-awareness.md) | Sprint 2 | Done |
-| [Offline Mutation Queuing](documentation/requirements/wip/sprint-3/01_offline-mutation-queing_local_persistence.md) | Sprint 3 | Done |
+| [Offline Mutation Queuing](documentation/requirements/done/sprint-3/01_offline-mutation-queing_local_persistence.md) | Sprint 3 | Done |
 | [Connectivity Resilience](documentation/requirements/done/sprint-3/connectivity_resilience.md) | Sprint 3 | Done |
+| [Interview Readiness](documentation/requirements/done/sprint-4/00_epic.md) | Sprint 4 | Done |
 
 ## Local Development
 

@@ -2,7 +2,7 @@
 
 Current state of the codebase for alignment with requirements. Updated as sprints complete.
 
-**Last updated:** Sprint 3 (Offline Mutation Queuing & Local Persistence) complete.
+**Last updated:** Sprint 4 (Interview Readiness) complete.
 
 ## PocketBase Collections
 
