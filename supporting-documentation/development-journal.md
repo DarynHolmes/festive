@@ -189,3 +189,5 @@ Set up Histoire for the Quasar + Vue 3 project. The install itself was straightf
 - **Quasar as Vue plugin:** Used `app.use(Quasar, { config: {}, plugins: { Notify } })` in the setup file to register components and plugins manually.
 
 Created stories for `LodgeCard` (3 variants: default, with meeting location, with actions slot) and `DiningTable` (4 variants: loading, empty, mixed statuses, sync badges). Mock data uses realistic UGLE names and ranks.
+
+**Vercel deployment** — Deployed Histoire to Vercel as a second project (`festive-board-histoire`). Build succeeded on first attempt but served 404s. The Production Overrides showed the output directory was set to `clients/secretary-app` instead of `.histoire/dist`. After correcting the settings (root: `clients/secretary-app`, build: `pnpm story:build`, output: `.histoire/dist`) and redeploying, the component showcase went live.

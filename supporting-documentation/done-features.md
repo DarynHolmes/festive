@@ -152,3 +152,28 @@
 
 - Development journal updated with Sprint 3 entries — planning, implementation, defects found during manual testing, E2E test pragmatism decisions, UX polish session
 - ADR-009 (Code Quality Metrics) — ESLint + TypeScript strict mode as lightweight quality gates
+
+## Sprint 4 — Interview Readiness
+
+**Epic:** Prepare the prototype for presentation to the UGLE interview panel.
+
+### 01 — Live Deployment
+
+- Secretary app deployed to Vercel at `https://festive-board-manager.vercel.app/`
+- PocketBase production instance on PocketHost with seeded 4-lodge dataset
+- Hash-based routing — no server rewrite rules needed
+
+### 02 — GitHub Actions CI
+
+- `.github/workflows/ci.yml` — lint, unit tests, build, Playwright E2E on every push to `main` and all PRs
+- All 14 E2E tests green after resolving: dev server timing (switched to build + http-server), missing env vars, SSE mock for CI
+
+### 03 — Histoire Component Showcase
+
+- Histoire configured with Quasar + Vue 3 integration (manual plugin wiring, SCSS variable injection, SSR guard)
+- 2 stories (LodgeCard, DiningTable) with 7 variants showcasing component states
+- Deployed to Vercel as a separate project (`festive-board-histoire`)
+
+### 05 — Manual Test Review
+
+- Manual test documentation split into `documentation/manual-testing/offline-queue-sync.md` and `accessibility.md`
