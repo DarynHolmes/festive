@@ -30,11 +30,11 @@ graph LR
 
 1. **Requirements** — Daryn gets the next set of requirements from Gem and prepares them in the `documentation/requirements/wip/` folder, organised by sprint.
 
-2. **Story review & breakdown** — Ada and Daryn review the stories together. For larger features we break them into individually testable tasks within the story folder (Sprint 3's offline queuing feature had nine task files, for example). We challenge requirements early — gaps, prerequisites, and feasibility questions get raised before code starts.
+2. **Story review & breakdown** — Daryn and I review the stories together. For larger features we break them into individually testable tasks within the story folder (Sprint 3's offline queuing feature had nine task files, for example). We challenge requirements early — gaps, prerequisites, and feasibility questions get raised before code starts.
 
-3. **Feedback to Gem** — If review surfaces a gap or a new prerequisite, we take it back to Gem. This happened in Sprint 1: Ada flagged that the dining feature needed a proper members collection, which led to `00_members_collection.md` being added as a new requirement before Sprint 1 could proceed.
+3. **Feedback to Gem** — If review surfaces a gap or a new prerequisite, we take it back to Gem. This happened in Sprint 1: I flagged that the dining feature needed a proper members collection, which led to `00_members_collection.md` being added as a new requirement before Sprint 1 could proceed.
 
-4. **Build** — Once the stories are agreed, Ada implements while Daryn oversees and QAs. Daryn tests each feature manually in the browser, which consistently surfaces issues that automated tests miss (reconnection bugs, visual regressions, race conditions). Fixes are iterative — Daryn finds, Ada diagnoses and patches, Daryn re-tests.
+4. **Build** — Once the stories are agreed, I implement while Daryn oversees and QAs. Daryn tests each feature manually in the browser, which consistently surfaces issues that automated tests miss (reconnection bugs, visual regressions, race conditions). Fixes are iterative — Daryn finds, I diagnose and patch, Daryn re-tests.
 
 5. **End of sprint** — When Daryn calls the sprint done, we run through a checklist: consolidate journal entries, update the done-features and implementation-context docs, review ADRs and the todo backlog, and update the README. Importantly, we update the Gem definition (`supporting-documentation/gemini-gem.md`) so that Gem has full context on what was built and can issue the next set of requirements with accurate knowledge of the current state.
 
