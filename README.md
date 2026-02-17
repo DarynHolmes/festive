@@ -58,9 +58,9 @@ AI was used throughout this prototype. The [Development Journal](supporting-docu
 |-----|---------|
 | [Overview](documentation/01_overview.md) | Problem frame, success criteria, strategic roadmap |
 | [Architecture](documentation/02_architecture.md) | System context, client layers, data flow, data model, deployment |
+| [Architecture Patterns](documentation/07_architecture_patterns.md) | Pattern catalogue — data layer, async state, offline resilience, testing |
 | [Component Design](documentation/03_component_design.md) | Container pages, presentational components — pattern with concrete example |
 | [Accessibility](documentation/04_accessibility.md) | WCAG 2.2 AA strategy, elderly-friendly design, automated enforcement |
-| [Architecture Patterns](documentation/07_architecture_patterns.md) | Pattern catalogue — data layer, async state, offline resilience, testing |
 
 ### Architecture Decision Records
 
