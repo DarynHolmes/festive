@@ -21,8 +21,7 @@ graph LR
     PB --- PH
     PB --- Local
     Admin --- Vercel
-    GH -->|Tests + Lint| Admin
-    GH -->|Tests + E2E mocked| Admin
+    GH -->|Lint + Unit + E2E mocked| Admin
 ```
 
 **Phase 1 scope:** Lodge Secretary SPA only. Member app is deferred.
@@ -69,7 +68,7 @@ graph TD
 ```mermaid
 sequenceDiagram
     participant UI as Lodge Secretary UI
-    participant Store as Pinia Store
+    participant Store as Colada Cache / Store
     participant PB as PocketBase
     participant Q as Offline Queue
 
