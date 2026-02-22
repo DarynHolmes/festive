@@ -17,6 +17,7 @@ export function toLodge(record: LodgeRecord): Lodge {
   };
 }
 
+
 export function toDiningEntry(record: DiningRecord): DiningEntry {
   return {
     id: record.id,
