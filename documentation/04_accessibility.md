@@ -28,17 +28,17 @@ Accessibility is not a feature — it's a constraint that shapes every design an
 Every E2E test injects axe-core to catch accessibility violations as regressions. This runs in CI — violations fail the build.
 
 ```typescript
-// Pattern: inject axe-core into any Playwright test
-import AxeBuilder from '@axe-core/playwright'
+// Actual pattern: uses makeAxeBuilder fixture from e2e/fixtures.ts
+import { test, expect } from './fixtures';
 
-test('dining dashboard meets WCAG 2.2 AA', async ({ page }) => {
-  await page.goto('/dining')
-  const results = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
-    .analyze()
-  expect(results.violations).toEqual([])
-})
+test('default page has no WCAG 2.2 AA violations', async ({ page, makeAxeBuilder }) => {
+  await page.goto('/');
+  const results = await makeAxeBuilder().analyze();
+  expect(results.violations).toEqual([]);
+});
 ```
+
+The `makeAxeBuilder` fixture pre-configures axe-core with WCAG 2.2 AA tags and excludes the Vite checker overlay.
 
 ### CI gate
 
@@ -88,7 +88,7 @@ Automated tests catch ~30-40% of accessibility issues. These manual checks cover
 
 | Level | What we test | Tool |
 |-------|-------------|------|
-| **Component** | Props render correct ARIA attributes; keyboard interactions work | Playwright component tests |
+| **Component** | Props render correct ARIA attributes; keyboard interactions work | Vitest unit tests |
 | **Page** | Full page passes axe-core audit; focus management on navigation | Playwright E2E + axe-core |
 | **Application** | End-to-end keyboard-only workflow; screen reader compatibility | Manual audit (pre-release) |
 
