@@ -22,7 +22,7 @@ graph LR
     PB --- Local
     Admin --- Vercel
     GH -->|Tests + Lint| Admin
-    GH -->|E2E against| PB
+    GH -->|Tests + E2E mocked| Admin
 ```
 
 **Phase 1 scope:** Lodge Secretary SPA only. Member app is deferred.
@@ -39,7 +39,6 @@ graph TD
     Stores[Pinia Stores<br/>Global state]
     Colada[Pinia Colada<br/>Async state]
     Services[Services<br/>PocketBase client]
-    Schemas[Zod Schemas<br/>Validation]
     Queue[Offline Queue<br/>IndexedDB]
 
     Pages --> Components
@@ -48,7 +47,6 @@ graph TD
     Composables --> Colada
     Composables --> Queue
     Colada --> Services
-    Services --> Schemas
     Queue --> Services
 ```
 
@@ -62,7 +60,6 @@ graph TD
 | **Stores** | Global reactive state | `useLodgeStore`, `useMutationQueueStore` |
 | **Pinia Colada** | Server state caching, mutations, optimistic updates | `useQuery`, `useMutation` definitions |
 | **Services** | PocketBase SDK wrapper, repository-light pattern | `dining-repository.ts`, `lodge-repository.ts` |
-| **Schemas** | Zod validation at system boundaries | `member-entry.ts` |
 | **Offline Queue** | IndexedDB persistence, mutation collapse, replay on reconnect | `mutation-queue.ts` |
 
 ---
@@ -178,9 +175,10 @@ See [ADR-010](decisions/ADR-010-offline-queue-architecture.md) and [ADR-011](dec
 | Environment | App Hosting | Backend | Purpose |
 |-------------|-------------|---------|---------|
 | **Dev** | `localhost:9000` (Quasar dev) | Local PocketBase (`pocketbase_0.36.3/`) | Development |
-| **Staging** | Vercel (preview deploys) | PocketHost instance | PR previews, CI E2E |
+| **Staging** | Vercel (preview deploys) | PocketHost instance | PR previews |
 | **Production** | Vercel | PocketHost instance | Demo / review |
+| **CI** | `http-server` (built SPA) | Mocked (Playwright route intercepts) | Automated tests |
 
-**CI pipeline:** GitHub Actions → install → lint → unit tests → E2E (Playwright against PocketHost) → deploy preview.
+**CI pipeline:** GitHub Actions → install → lint → unit tests → E2E (Playwright with mocked PocketBase routes) → deploy preview.
 
 **Histoire:** Component showcase hosted separately on Vercel for design review.
